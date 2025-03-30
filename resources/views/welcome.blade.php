@@ -30,12 +30,6 @@
         <meta property="og:url" content="https://phonesvapes4all.co.uk/" />
         <meta property="og:type" content="website" />
 
-        <!-- Favicon (optional) -->
-        <link
-            rel="icon"
-            href="{{ asset('favicon.ico') }}"
-            type="image/x-icon"
-        />
 
         <!-- Tailwind CSS -->
         @vite('resources/css/app.css')
