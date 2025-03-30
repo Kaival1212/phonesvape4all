@@ -1,22 +1,22 @@
+@push('head')
+<title>Log in | Phones & Vapes</title>
+<meta
+    name="description"
+    content="Secure login page to access your account, repair history, and store orders."
+/>
+
+<script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": "Login",
+        "url": "{{ url()->current() }}",
+        "description": "Login to Phones & Vapes to book repairs, access your orders, and manage your store activity."
+    }
+</script>
+@endpush
+
 <div class="flex flex-col gap-6">
-    @push('head')
-    <title>Log in | Phones & Vapes</title>
-    <meta
-        name="description"
-        content="Secure login to your Phones & Vapes account. Book repairs, browse stores and more."
-    />
-
-    <script type="application/ld+json">
-        {
-            "@context": "https://schema.org",
-            "@type": "WebPage",
-            "name": "Login",
-            "url": "{{ url()->current() }}",
-            "description": "Login to Phones & Vapes for repair bookings, vape orders and more."
-        }
-    </script>
-    @endpush
-
     <x-auth-header
         :title="__('Log in to your account')"
         :description="__('Enter your email and password below to log in')"

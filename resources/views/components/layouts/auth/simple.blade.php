@@ -1,12 +1,10 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
     <head>
-        <title>{{ $title ?? "Phones & Vapes" }}</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
         @stack('head')
-        <!-- ✅ This is what makes SEO from @push() show -->
+        <title>{{ $title ?? "Phones & Vapes" }}</title>
 
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         @vite('resources/css/app.css') @livewireStyles
     </head>
 
