@@ -1,7 +1,20 @@
 <div class="flex flex-col gap-6">
     @push('head')
-    <title>Log in to your account</title>
-    <meta name="description" content="Secure login page for Phones & Vapes" />
+    <title>Log in | Phones & Vapes</title>
+    <meta
+        name="description"
+        content="Secure login to your Phones & Vapes account. Book repairs, browse stores and more."
+    />
+
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "WebPage",
+            "name": "Login",
+            "url": "{{ url()->current() }}",
+            "description": "Login to Phones & Vapes for repair bookings, vape orders and more."
+        }
+    </script>
     @endpush
 
     <x-auth-header
