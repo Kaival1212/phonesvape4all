@@ -1,10 +1,7 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
     <head>
-        @stack('head') @if (! View::hasSection('head-title'))
-        <title>{{ $title ?? "Phones & Vapes" }}</title>
-        @endif
-
+        @stack('head')
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         @vite('resources/css/app.css') @livewireStyles
     </head>
