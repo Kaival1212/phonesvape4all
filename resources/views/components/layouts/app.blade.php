@@ -24,10 +24,34 @@ locations.', 'image' => null, ])
         <meta property="og:image" content="{{ $image }}" />
         @endif @vite('resources/css/app.css') @livewireStyles
     </head>
+
+    <!-- Swiper Styles -->
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
+    />
+    <!-- Swiper Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            new Swiper(".mySwiper", {
+                loop: true,
+                pagination: {
+                    el: ".swiper-pagination",
+                    clickable: true,
+                },
+                autoplay: {
+                    delay: 3000,
+                    disableOnInteraction: false,
+                },
+            });
+        });
+    </script>
+
     <body class="bg-white text-gray-800 antialiased">
-        <flux:header>
-            {{ $slot }}
-        </flux:header>
+        {{ $slot }}
+
         @livewireScripts
     </body>
 </html>
