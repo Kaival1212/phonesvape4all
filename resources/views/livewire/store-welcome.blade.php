@@ -31,7 +31,7 @@
                 class="group block bg-white dark:bg-gray-700 p-6 rounded-lg border border-gray-200 dark:border-gray-600 hover:border-blue-500 dark:hover:border-blue-500 transition transform hover:-translate-y-1 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
                 <div class="flex justify-center mb-6">
-                    <img src={{ asset("images/fix-device.png") }} alt="Fix Your
+                    <img src={{ asset("storage/images/fix-device.png") }} alt="Fix Your
                     Device" class="h-20 w-20 drop-shadow-sm
                     group-hover:scale-105 transition" />
                 </div>
@@ -52,7 +52,7 @@
                 class="group block bg-white dark:bg-gray-700 p-6 rounded-lg border border-gray-200 dark:border-gray-600 hover:border-blue-500 dark:hover:border-blue-500 transition transform hover:-translate-y-1 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
                 <div class="flex justify-center mb-6">
-                    <img src={{ asset("images/buy-device.png") }} alt="Buy a New
+                    <img src={{ asset("storage/images/buy-device.png") }} alt="Buy a New
                     Device" class="h-20 w-20 drop-shadow-sm
                     group-hover:scale-105 transition" />
                 </div>
@@ -73,7 +73,7 @@
                 class="group block bg-white dark:bg-gray-700 p-6 rounded-lg border border-gray-200 dark:border-gray-600 hover:border-blue-500 dark:hover:border-blue-500 transition transform hover:-translate-y-1 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
                 <div class="flex justify-center mb-6">
-                    <img src={{ asset("images/sell-device.png") }} alt="Sell a
+                    <img src={{ asset("storage/images/sell-device.png") }} alt="Sell a
                     Device" class="h-20 w-20 drop-shadow-sm
                     group-hover:scale-105 transition" />
                 </div>
@@ -165,7 +165,7 @@
                 <!-- Middle Image -->
                 <div class="flex justify-center items-center">
                     <img
-                        src="{{ asset('images/bg-2.webp') }}"
+                        src="{{ asset('storage/images/bg-2.webp') }}"
                         alt="Repair Services"
                         class="rounded-lg border border-gray-200 dark:border-gray-700 w-full max-w-sm object-cover transform hover:scale-105 transition duration-500"
                     />
