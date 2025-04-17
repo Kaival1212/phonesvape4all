@@ -2,26 +2,25 @@
 
 namespace Database\Seeders;
 
+use Illuminate\Database\Seeder;
 use App\Models\User;
 use App\Models\Store;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
+use App\Models\Category;
+use App\Models\Brand;
+use App\Models\Product;
+use App\Models\ProductVariant;
+use App\Models\RepairService;
+use App\Models\ProductStoreInventory;
 
 class DatabaseSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
-        // User::factory(10)->create();
-
         User::factory()->create([
             'name' => 'Test User',
             'email' => 'test@example.com',
             'is_admin' => true,
         ]);
-
 
         $stores = [
             [
@@ -64,6 +63,58 @@ class DatabaseSeeder extends Seeder
 
         foreach ($stores as $store) {
             Store::create($store);
+        }
+
+        $category = Category::create([
+            'name' => 'Phones',
+            'slug' => 'phones',
+        ]);
+
+        $brand = Brand::create([
+            'name' => 'Apple',
+            'slug' => 'apple',
+            'category_id' => $category->id,
+        ]);
+
+        $product = Product::create([
+            'name' => 'iPhone 12',
+            'slug' => 'iphone-12',
+            'category_id' => $category->id,
+            'brand_id' => $brand->id,
+            'description' => 'Latest Apple smartphone with A14 Bionic chip.',
+            'is_selling' => true,
+            'is_repairable' => true,
+        ]);
+
+        $variants = [
+            ['variant_name' => '64GB Black', 'price' => 699],
+            ['variant_name' => '128GB White', 'price' => 749],
+            ['variant_name' => '256GB Blue', 'price' => 799],
+        ];
+
+        foreach ($variants as $variant) {
+            ProductVariant::create(array_merge($variant, ['product_id' => $product->id]));
+        }
+
+        $services = [
+            ['name' => 'Screen Repair', 'price' => 350],
+            ['name' => 'Water Damage Service', 'price' => 59],
+            ['name' => 'Charging Port Repair', 'price' => 159],
+            ['name' => 'Back Glass Repair', 'price' => 139],
+            ['name' => 'Camera Repair', 'price' => 139],
+            ['name' => 'Camera Lens Replacement', 'price' => 79],
+        ];
+
+        foreach ($services as $service) {
+            RepairService::create(array_merge($service, ['product_id' => $product->id]));
+        }
+
+        foreach (Store::all() as $store) {
+            ProductStoreInventory::create([
+                'product_id' => $product->id,
+                'store_id' => $store->id,
+                'quantity' => rand(2, 10),
+            ]);
         }
     }
 }

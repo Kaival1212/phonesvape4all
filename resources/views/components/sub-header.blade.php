@@ -5,7 +5,7 @@
     <div
         class="container mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-4"
     >
-        <div class="flex flex-col ">
+        <div class="flex flex-col">
             <h1
                 class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-3 md:mb-0"
                 itemscope

@@ -1,6 +1,8 @@
 @props([ 'title' => 'Phones & Vapes 4 All', 'description' => 'Visit Phones &
 Vapes 4 All for mobile repairs, accessories, and vape supplies across our UK
-locations.', 'image' => null, 'store' ])
+locations.', 'image' => null, 'store' => null ]) @php use App\Models\Store; if
+(!$store) { $store = Store::where('slug',
+'phonesvapes-4all-east-sheen')->first(); } @endphp
 
 <!DOCTYPE html>
 <html lang="en-GB">
@@ -197,10 +199,12 @@ locations.', 'image' => null, 'store' ])
         });
     </script>
 
-    <body class="bg-white text-gray-800 antialiased">
+    <body class="bg-white text-gray-800 antialiased flex flex-col min-h-screen">
         <x-sub-header :store="$store" />
 
-        {{ $slot }}
+        <div class="flex-grow">
+            {{ $slot }}
+        </div>
 
         <x-footer :store="$store" />
         @livewireScripts @fluxScripts
