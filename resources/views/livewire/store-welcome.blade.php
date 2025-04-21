@@ -50,7 +50,7 @@
 
             <!-- Buy a New Device -->
             <a
-                href="/shop"
+                href="{{ route('buy') }}"
                 class="group block bg-white dark:bg-gray-700 p-6 rounded-lg border border-gray-200 dark:border-gray-600 hover:border-blue-500 dark:hover:border-blue-500 transition transform hover:-translate-y-1 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
                 <div class="flex justify-center mb-6">

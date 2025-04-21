@@ -1,16 +1,15 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Livewire\Buy;
 
+use Livewire\Component;
 use App\Models\Brand;
 use App\Models\Product;
-use App\Models\RepairService;
-use App\Models\Store;
-use Livewire\Component;
 
-class RepairProduct extends Component
+class Phones extends Component
 {
     public $search = '';
+    //public $repairService;
     public $brand;
     public $categoriesSlug;
     public $brandSlug;
@@ -22,12 +21,13 @@ class RepairProduct extends Component
         $this->categoriesSlug = $categoriesSlug;
         $this->brandSlug = $brandSlug;
 
+
     }
 
     public function render()
     {
-        return view('livewire.repair-products' , [
-            'products' =>  Product::where('is_repairable', true)
+        return view('livewire.buy.phones' , [
+            'products' =>  Product::where('is_selling', true)
             ->where('brand_id', $this->brand->id)
             ->where('name', 'like', '%' . $this->search . '%')
             ->get()
