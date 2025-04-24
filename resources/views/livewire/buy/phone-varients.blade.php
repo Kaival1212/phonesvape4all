@@ -13,24 +13,27 @@
         <!-- Main Grid -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
             <!-- Images -->
-            <div class="lg:col-span-7">
+            <div class="lg:col-span-7 space-y-4">
                 <div class="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm">
                     <img
-                        src="{{ env('R2_URL') . ($this->selectedVariantDetails->image ?? $product->image) }}"
+                        src="{{ Storage::disk('r2')->url($this->selectedVariantDetails->image ?? $product->image) }}"
                         alt="{{ $this->selectedVariantDetails->variant_name }}"
                         class="w-full max-h-[500px] object-contain rounded-xl transition-all duration-300"
                     />
                 </div>
 
-                <div class="grid grid-cols-5 gap-2 mt-4">
-                    @foreach ($product->variants as $variant) @if($variant->image)
+                <div class="grid grid-cols-5 gap-2">
+                    @foreach ($product->variants as $variant)
+                    @if($variant->image)
                     <div
                         wire:click="$set('selectedVariant', {{ $variant->id }})"
                         class="cursor-pointer overflow-hidden rounded-lg
-                                    {{ $selectedVariant === $variant->id ? 'ring-2 ring-blue-500' : 'ring-1 ring-gray-300 dark:ring-gray-700' }}"
+                                    {{ $selectedVariant === $variant->id
+                                        ? 'ring-2 ring-blue-500'
+                                        : 'ring-1 ring-gray-300 dark:ring-gray-700' }}"
                     >
                         <img
-                            src="{{ env('R2_URL') . $variant->image }}"
+                            src="{{ Storage::disk('r2')->url($variant->image) }}"
                             alt="{{ $variant->variant_name }}"
                             class="w-full h-20 object-cover"
                         />
@@ -64,7 +67,9 @@
                         <div
                             wire:click="$set('selectedVariant', {{ $variant->id }})"
                             class="cursor-pointer px-4 py-3 rounded-lg border transition-all duration-200
-                                    {{ $selectedVariant === $variant->id ? 'border-blue-600 bg-blue-50 dark:bg-blue-900/20' : 'border-gray-200 dark:border-gray-700' }}"
+                                    {{ $selectedVariant === $variant->id
+                                        ? 'border-blue-600 bg-blue-50 dark:bg-blue-900/20'
+                                        : 'border-gray-200 dark:border-gray-700' }}"
                         >
                             <div class="flex items-center justify-between">
                                 <span
@@ -86,8 +91,9 @@
                     <div>
                         <label
                             class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block"
-                            >Quantity</label
                         >
+                            Quantity
+                        </label>
                         <div class="flex items-center">
                             <button
                                 wire:click="decrementQuantity"
@@ -100,6 +106,7 @@
                                 type="text"
                                 value="{{ $quantity }}"
                                 class="w-12 text-center bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white"
+                                readonly
                             />
                             <button
                                 wire:click="incrementQuantity"

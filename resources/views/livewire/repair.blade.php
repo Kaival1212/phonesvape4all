@@ -24,7 +24,7 @@
             >
                 <div class="relative">
                     <img
-                        src="{{ env('R2_URL') . $category->image }}"
+                        src="{{ Storage::disk('r2')->url($category->image) }}"
                         alt="{{ $category->name }}"
                         class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
                     />

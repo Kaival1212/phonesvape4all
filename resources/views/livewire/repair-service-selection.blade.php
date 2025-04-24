@@ -18,7 +18,7 @@
         <!-- Product Image -->
         <div class="flex justify-center mb-10">
             <img
-                src="{{ env('R2_URL') . $product->image }}"
+                src="{{ Storage::disk('r2')->url($product->image) }}"
                 alt="{{ $product->name }}"
                 class="w-52 sm:w-64 rounded-xl shadow-lg"
             />
@@ -33,7 +33,7 @@
                 @if ($service->image)
                 <div class="w-full h-40 mb-4 overflow-hidden rounded-lg">
                     <img
-                        src="{{ env('R2_URL') . $service->image }}"
+                        src="{{ Storage::disk('r2')->url($service->image) }}"
                         alt="{{ $service->name }}"
                         class="w-full h-full object-cover"
                     />
@@ -68,9 +68,10 @@
                 <flux:button
                     size="sm"
                     variant="primary"
-                    href="{{ route('repair.product.form' , [$categoriesSlug , $brandSlug ,$productID , $service->id  ]) }}"
-                    >Book Now</flux:button
+                    href="{{ route('repair.product.form', [$categoriesSlug, $brandSlug, $productID, $service->id]) }}"
                 >
+                    Book Now
+                </flux:button>
             </div>
             @endforeach
         </div>

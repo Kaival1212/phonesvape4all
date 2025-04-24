@@ -50,6 +50,13 @@
                         border-collapse: collapse;
                     "
                 >
+                    <tr style="background-color: #f9f9f9">
+                        <td style="padding: 10px; font-weight: bold">
+                            Booking ID
+                        </td>
+                        <td style="padding: 10px">#{{ $repairBooking->id }}</td>
+                    </tr>
+
                     <tr>
                         <td style="padding: 10px; font-weight: bold">
                             Service

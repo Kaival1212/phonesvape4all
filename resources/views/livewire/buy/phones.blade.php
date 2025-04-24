@@ -37,7 +37,7 @@
             >
                 <div class="relative">
                     <img
-                        src="{{ env('R2_URL') . $product->image }}"
+                        src="{{ Storage::disk('r2')->url($product->image) }}"
                         alt="{{ $product->name }}"
                         class="w-full h-48 object-cover"
                     />
@@ -67,7 +67,7 @@
                     </p>
                     <div class="text-center">
                         <a
-                            href=" {{ route('buy.phones.variants' , [ $categoriesSlug , $brandSlug , $product->id ]) }}"
+                            href="{{ route('buy.phones.variants', [$categoriesSlug, $brandSlug, $product->id]) }}"
                             class="inline-block bg-blue-600 hover:bg-blue-700 text-white text-sm py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
                         >
                             View Product
