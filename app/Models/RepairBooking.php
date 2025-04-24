@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use App\Mail\RepairAppoinmentBooked;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Mail;
 
 class RepairBooking extends Model
 {
@@ -26,6 +28,29 @@ class RepairBooking extends Model
         'currency',
         'store_id'
     ];
+
+    protected static function booted()
+    {
+
+        static::created(function ($repairBooking) {
+
+            $email = $repairBooking->email;
+
+            Mail::to($email)->send(new RepairAppoinmentBooked(
+                $repairBooking
+            ));
+        });
+
+    }
+
+    public function repairService()
+    {
+        return $this->belongsTo(RepairService::class);
+    }
+    public function store()
+    {
+        return $this->belongsTo(Store::class);
+    }
 }
 
 

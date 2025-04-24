@@ -71,6 +71,7 @@ class RepairBookingForm extends Component
             'selected_date' => $this->selectedDate,
             'selected_time' => $this->selectedTime,
             'store_id' => $this->store_id,
+            'notes' => $this->notes,
             //'status' => 'pending',
             'price' => $this->service->price,
             //'currency' => $this->service->currency,
