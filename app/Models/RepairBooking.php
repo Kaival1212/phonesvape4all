@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Mail\RepairAppoinmentBooked;
+use App\Mail\ThanksForRepairPayment;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Mail;
@@ -25,6 +26,8 @@ class RepairBooking extends Model
         'payment_method',
         'transaction_id',
         'price',
+        'discount',
+        'total',
         'currency',
         'store_id'
     ];
@@ -39,6 +42,16 @@ class RepairBooking extends Model
             Mail::to($email)->send(new RepairAppoinmentBooked(
                 $repairBooking
             ));
+        });
+
+        static::updated(function ($repairBooking) {
+            if ($repairBooking->isDirty('payment_status') && $repairBooking->payment_status == 'paid') {
+                $email = $repairBooking->email;
+
+                Mail::to($email)->send(new ThanksForRepairPayment(
+                    $repairBooking
+                ));
+            }
         });
 
     }

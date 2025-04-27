@@ -23,11 +23,11 @@
                 class="group block bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden hover:shadow-xl transition duration-300 transform hover:-translate-y-1"
             >
                 <div class="relative">
-                    <img
-                        src="{{ Storage::disk('r2')->url($category->image) }}"
-                        alt="{{ $category->name }}"
-                        class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
+                        <img
+                            src="{{ Storage::disk('r2')->url($category->image) }}"
+                            alt="{{ $category->name }}"
+                            class="w-full h-full object-fill object-center transition-transform duration-300 group-hover:scale-105"
+                        />
                 </div>
                 <div class="p-4 text-center">
                     <h3

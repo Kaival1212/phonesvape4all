@@ -11,14 +11,14 @@ class ProductStoreInventory extends Model
     use HasFactory;
 
     protected $fillable = [
-        'product_id',
+        'product_variant_id',
         'store_id',
         'quantity',
     ];
 
-    public function product()
+    public function variant()
     {
-        return $this->belongsTo(Product::class);
+        return $this->belongsTo(ProductVariant::class , 'product_variant_id');
     }
 
     public function store()

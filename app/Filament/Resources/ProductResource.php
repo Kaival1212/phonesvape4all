@@ -4,6 +4,9 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ProductResource\Pages;
 use App\Filament\Resources\ProductResource\RelationManagers;
+use App\Filament\Resources\ProductResource\RelationManagers\RepairsRelationManagerRelationManager;
+use App\Filament\Resources\ProductResource\RelationManagers\VariantsRelationManagerRelationManager;
+use App\Livewire\Repair;
 use App\Models\Product;
 use Dom\Text;
 use Filament\Forms;
@@ -22,8 +25,9 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class ProductResource extends Resource
 {
     protected static ?string $model = Product::class;
+    protected static ?string $navigationGroup = 'Catalog';
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-device-phone-mobile';
 
     public static function form(Form $form): Form
     {
@@ -136,7 +140,8 @@ class ProductResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            VariantsRelationManagerRelationManager::class,
+            RepairsRelationManagerRelationManager::class,
         ];
     }
 

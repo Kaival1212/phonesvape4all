@@ -4,6 +4,10 @@ namespace App\Livewire\Buy;
 
 use Livewire\Component;
 use App\Models\Product;
+use App\Models\ProductVariant;
+use Illuminate\Support\Facades\Log;
+use App\Models\ProductStoreInventory;
+use App\Models\SellBooking;
 
 class PhoneVarients extends Component
 {
@@ -13,9 +17,15 @@ class PhoneVarients extends Component
     public $categoriesSlug;
     public $brandSlug;
     public $selectedVariant;
-    public $quantity = 1;
 
-    protected $listeners = ['refreshComponent' => '$refresh'];
+    public $customerName;
+    public $customerPhone;
+    public $customerEmail;
+
+    public $storeId;
+
+
+    public $availabeStores;
 
     public function mount($productID, $categoriesSlug, $brandSlug)
     {
@@ -28,60 +38,64 @@ class PhoneVarients extends Component
 
         if ($this->productVarients->count() > 0) {
             $this->selectedVariant = $this->productVarients->first()->id;
+            $temp = $this->productVarients->firstWhere('id', $this->selectedVariant);
+            $this->availabeStores = $temp->stock;
+
+            //$this->availabeStores = $this->selectedVariant->stock;
+
         }
     }
 
     public function getSelectedVariantDetailsProperty()
     {
-        return $this->productVarients->firstWhere('id', $this->selectedVariant);
+
+        $temp = $this->productVarients->firstWhere('id', $this->selectedVariant);
+        $this->availabeStores = $temp->stock;
+
+        return $temp;
     }
 
-    public function incrementQuantity()
+    protected function loadAvailableStores()
+{
+    $this->availabeStores = ProductStoreInventory::where('product_variant_id', $this->selectedVariant)
+        ->get();
+}
+
+    public function updatedSelectedVariant()
     {
-        $this->quantity++;
+        $this->getSelectedVariantDetailsProperty();
     }
 
-    public function decrementQuantity()
-    {
-        if ($this->quantity > 1) {
-            $this->quantity--;
-        }
-    }
 
-    public function addToCart()
-    {
-        $variant = $this->selectedVariantDetails;
-
-        if (!$variant) {
-            session()->flash('error', 'Variant not found.');
-            return;
-        }
-
-        $cart = session()->get('cart', []);
-        $key = 'variant_' . $variant->id;
-
-        if (isset($cart[$key])) {
-            $cart[$key]['quantity'] += $this->quantity;
-        } else {
-            $cart[$key] = [
-                'product_id' => $this->product->id,
-                'variant_id' => $variant->id,
-                'variant_name' => $variant->variant_name,
-                'price' => $variant->price,
-                'quantity' => $this->quantity,
-                'image' => $variant->image ?? $this->product->image,
-            ];
-        }
-
-        session()->put('cart', $cart);
-        session()->flash('success', 'Product added to cart!');
-        $this->emit('refreshComponent');
-    }
 
     public function buyNow()
     {
-        $this->addToCart();
-        return redirect()->route('cart.view');
+        Log($this->storeId);
+        $variant = $this->getSelectedVariantDetailsProperty();
+
+        $validated = $this->validate([
+            'customerName' => 'required|string|max:255',
+            'customerPhone' => 'required|string|max:15',
+            'customerEmail' => 'required|email|max:255',
+        ]);
+
+        if ($variant) {
+            SellBooking::create([
+                'product_variant_id' => $variant->id,
+                'store_id' => $this->storeId,
+                'customer_name' => $this->customerName,
+                'customer_phone' => $this->customerPhone,
+                'customer_email' => $this->customerEmail,
+                'status' => 'pending',
+                "price" => $variant->price,
+            ]);
+
+            // flassh message
+            session()->flash('success', 'Booking created successfully!');
+
+        } else {
+            Log::error('Variant not found for ID: ' . $this->selectedVariant);
+        }
     }
 
     public function render()

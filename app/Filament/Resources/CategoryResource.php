@@ -22,8 +22,9 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class CategoryResource extends Resource
 {
     protected static ?string $model = Category::class;
+    protected static ?string $navigationGroup = 'Catalog';
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-table-cells';
 
     public static function form(Form $form): Form
     {
@@ -46,6 +47,23 @@ class CategoryResource extends Resource
                     ->disk('r2')
                     ->visibility('public')
                     ->imageEditor()
+                    ->imageEditorAspectRatios([
+                        '16:9', // Good for laptops and wide shots
+                        '4:3',  // Ideal for tablets
+                        '1:1',  // Perfect for uniform display
+                        '3:4',  // Better for phones in portrait
+                        '9:16', // Great for phones in landscape
+                        '2:3',  // Versatile for various devices
+                    ])
+                    ->image() // Ensure only images are uploaded
+                    ->imageCropAspectRatio('1:1') // Default crop ratio for consistency
+                    ->imageResizeMode('contain') // Prevents important parts from being cut off
+                    ->imageResizeTargetWidth(800) // Higher resolution for better quality
+                    ->imageResizeTargetHeight(800)
+                    ->helperText('Upload a high-quality image (recommended: 800×800px or larger). PNG or JPG only.')
+                    ->imagePreviewHeight(150) // Slightly larger preview
+                    ->columnSpanFull() // Full width in the form
+                    ->required()
             ]);
     }
 

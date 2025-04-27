@@ -29,17 +29,17 @@
 
         <!-- Products Grid -->
         <div
-            class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
+            class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6"
         >
             @foreach($products as $product)
             <div
                 class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden shadow hover:shadow-xl transition duration-300"
             >
-                <div class="relative">
+                <div class="flex relative justify-center items-center">
                     <img
                         src="{{ Storage::disk('r2')->url($product->image) }}"
                         alt="{{ $product->name }}"
-                        class="w-full h-48 object-cover"
+                        class="w-1/2 h-1/2 md:w-full md:h-full object-cover"
                     />
                     @if($product->is_repairable)
                     <span

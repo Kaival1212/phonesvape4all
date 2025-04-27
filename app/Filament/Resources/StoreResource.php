@@ -17,7 +17,8 @@ class StoreResource extends Resource
 {
     protected static ?string $model = Store::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationGroup = 'Locations';
+    protected static ?string $navigationIcon  = 'heroicon-o-building-storefront';
 
     public static function form(Form $form): Form
     {
@@ -62,6 +63,16 @@ class StoreResource extends Resource
                 Forms\Components\FileUpload::make('image')
                     ->disk('r2')
                     ->visibility('public')
+                    ->imageEditor()
+                     ->imageEditorAspectRatios(['1:1' , '4:1'])
+                    ->imageEditorViewportWidth(100)
+                    ->imageEditorViewportHeight(100)
+                        // after cropping, resize the saved image to 100×100px
+                    ->imageResizeTargetWidth(100)
+                    ->imageResizeTargetHeight(100)
+
+                    // show a 100px-tall preview in the form
+                    ->imagePreviewHeight(100)
                     ->label('Store Image'),
 
                 Forms\Components\Textarea::make('meta_title')

@@ -27,6 +27,16 @@ class Store extends Model
                     ->withTimestamps();
     }
 
+    public function sellBookings()
+    {
+        return $this->hasMany(\App\Models\SellBooking::class);
+    }
+
+    public function repairBookings()
+    {
+        return $this->hasMany(\App\Models\RepairBooking::class);
+    }
+
 }
 
 

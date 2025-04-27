@@ -31,8 +31,8 @@
                     <img
                         src="{{ Storage::disk('r2')->url($category->image) }}"
                         alt="{{ $category->name }}"
-                        class="w-full h-52 object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
+                        class="w-full h-full object-fill object-center transition-transform duration-300 group-hover:scale-105"
+                        />
                     <div
                         class="absolute top-2 right-2 bg-blue-100 text-blue-600 text-xs font-semibold px-2 py-1 rounded"
                     >

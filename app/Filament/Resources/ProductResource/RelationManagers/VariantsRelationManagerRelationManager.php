@@ -1,39 +1,28 @@
 <?php
 
-namespace App\Filament\Resources;
+namespace App\Filament\Resources\ProductResource\RelationManagers;
 
-use App\Filament\Resources\ProductVariantResource\Pages;
-use App\Filament\Resources\ProductVariantResource\RelationManagers;
-use App\Models\ProductVariant;
-use Dom\Text;
 use Filament\Forms;
-use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
-use Filament\Resources\Resource;
+use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
-use Filament\Tables\Columns\ImageColumn;
-use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\FileUpload;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ImageColumn;
 
-use function Laravel\Prompts\select;
-
-class ProductVariantResource extends Resource
+class VariantsRelationManagerRelationManager extends RelationManager
 {
-    protected static ?string $model = ProductVariant::class;
-    protected static ?string $navigationGroup = 'Catalog';
+    protected static string $relationship = 'variants';
 
-    protected static ?string $navigationIcon = 'heroicon-o-arrows-up-down';
-
-    public static function form(Form $form): Form
+    public function form(Form $form): Form
     {
         return $form
             ->schema([
-
                 Select::make('product_id')
                 ->relationship('product', 'name')
                     ->label('Product ID')
@@ -65,9 +54,10 @@ class ProductVariantResource extends Resource
             ]);
     }
 
-    public static function table(Table $table): Table
+    public function table(Table $table): Table
     {
         return $table
+            ->recordTitleAttribute('variant_name')
             ->columns([
 
                 TextColumn::make('id')
@@ -98,29 +88,17 @@ class ProductVariantResource extends Resource
             ->filters([
                 //
             ])
+            ->headerActions([
+                Tables\Actions\CreateAction::make(),
+            ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
-    }
-
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
-    }
-
-    public static function getPages(): array
-    {
-        return [
-            'index' => Pages\ListProductVariants::route('/'),
-            'create' => Pages\CreateProductVariant::route('/create'),
-            'edit' => Pages\EditProductVariant::route('/{record}/edit'),
-        ];
     }
 }

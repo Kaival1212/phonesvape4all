@@ -27,6 +27,8 @@ return new class extends Migration
             $table->string('transaction_id')->nullable();
 
             $table->double('price');
+            $table->double('discount')->nullable();
+            $table->double('total')->nullable();
             $table->string('currency')->default('GBP');
 
             $table->foreignId('store_id')->constrained('stores')->onDelete('cascade');

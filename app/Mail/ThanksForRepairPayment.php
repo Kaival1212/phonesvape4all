@@ -9,17 +9,24 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class TestMail extends Mailable
+class ThanksForRepairPayment extends Mailable
 {
     use Queueable, SerializesModels;
 
     /**
      * Create a new message instance.
      */
-    public function __construct()
+
+    public $repairBooking;
+    public $repairService;
+    public $store;
+    public function __construct($repairBooking)
     {
-        //
-    }
+        $this->repairBooking = $repairBooking;
+        $this->repairService = $repairBooking->repairService;
+        $this->store = $repairBooking->store;
+
+            }
 
     /**
      * Get the message envelope.
@@ -27,7 +34,7 @@ class TestMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Test Mail',
+            subject: 'Thanks For Repair Payment',
         );
     }
 
@@ -37,7 +44,7 @@ class TestMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'view.name',
+            view: 'mail.thanks-for-repair-payment',
         );
     }
 

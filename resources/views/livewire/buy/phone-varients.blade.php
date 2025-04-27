@@ -11,6 +11,13 @@
         </div>
 
         <!-- Main Grid -->
+
+        @session('success')
+        <div class="mb-4 p-4 bg-green-100 text-green-800 rounded">
+            {{ session("success") }}
+        </div>
+        @endsession
+
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
             <!-- Images -->
             <div class="lg:col-span-7 space-y-4">
@@ -56,9 +63,6 @@
                         <p class="text-blue-600 text-2xl font-bold mt-2">
                             £{{ number_format($this->selectedVariantDetails->price, 2) }}
                         </p>
-                        <p class="text-sm text-gray-500 dark:text-gray-400">
-                            SKU: #{{ $this->selectedVariantDetails->id }}
-                        </p>
                     </div>
 
                     <!-- Variant List -->
@@ -87,45 +91,102 @@
                         @endforeach
                     </div>
 
-                    <!-- Quantity -->
-                    <div>
-                        <label
-                            class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block"
-                        >
-                            Quantity
-                        </label>
-                        <div class="flex items-center">
-                            <button
-                                wire:click="decrementQuantity"
-                                type="button"
-                                class="w-10 h-10 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-white rounded-l flex items-center justify-center"
-                            >
-                                −
-                            </button>
-                            <input
-                                type="text"
-                                value="{{ $quantity }}"
-                                class="w-12 text-center bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white"
-                                readonly
-                            />
-                            <button
-                                wire:click="incrementQuantity"
-                                type="button"
-                                class="w-10 h-10 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-white rounded-r flex items-center justify-center"
-                            >
-                                +
-                            </button>
-                        </div>
-                    </div>
-
                     <!-- Actions -->
                     <div class="grid gap-4">
-                        <button
-                            wire:click="buyNow"
-                            class="w-full bg-yellow-500 hover:bg-yellow-600 text-white py-3 rounded-lg transition"
-                        >
-                            Buy Now
-                        </button>
+                        <flux:modal.trigger name="buying-modal">
+                            <button
+                                class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg transition"
+                            >
+                                Buy Now
+                            </button>
+                        </flux:modal.trigger>
+
+                        <flux:modal name="buying-modal" class="md:w-96">
+                            <flux:heading>Confirm Purchase</flux:heading>
+
+                            <form
+                                wire:submit.prevent="buyNow"
+                                class="space-y-4"
+                            >
+                                <!-- Pickup Store -->
+                                <flux:field>
+                                    <flux:label>Pickup Store</flux:label>
+                                    <flux:select wire:model.defer="storeId">
+                                        <option value="" disabled>
+                                            Select a store…
+                                        </option>
+                                        @foreach($availabeStores as $inv)
+                                        <option value="{{ $inv->store_id }}">
+                                            {{ $inv->store->name }}
+                                            @if($inv->quantity >= 1) – same day
+                                            pick up @else – pick up tomorrow
+                                            @endif
+                                        </option>
+                                        @endforeach
+                                    </flux:select>
+                                    <flux:error name="storeId" />
+                                </flux:field>
+
+                                <!-- Your Name -->
+                                <flux:field>
+                                    <flux:label>Your Name</flux:label>
+                                    <flux:input
+                                        wire:model.defer="customerName"
+                                        type="text"
+                                        placeholder="John Smith"
+                                    />
+                                    <flux:error name="customerName" />
+                                </flux:field>
+
+                                <!-- Email Address -->
+                                <flux:field>
+                                    <flux:label>Email Address</flux:label>
+                                    <flux:input
+                                        wire:model.defer="customerEmail"
+                                        type="email"
+                                        placeholder="you@example.com"
+                                    />
+                                    <flux:error name="customerEmail" />
+                                </flux:field>
+
+                                <!-- Phone Number -->
+                                <flux:field>
+                                    <flux:label>Phone Number</flux:label>
+                                    <flux:input
+                                        wire:model.defer="customerPhone"
+                                        type="tel"
+                                        placeholder="07123 456789"
+                                    />
+                                    <flux:error name="customerPhone" />
+                                </flux:field>
+
+                                <!-- Payment Method -->
+                                <!-- <flux:field>
+                                    <flux:label>Payment Method</flux:label>
+                                    <flux:select
+                                        wire:model.defer="paymentMethod"
+                                    >
+                                        <option value="" disabled>
+                                            Choose one…
+                                        </option>
+                                        <option value="card">Card</option>
+                                        <option value="stripe">Stripe</option>
+                                        <option value="bank_transfer">
+                                            Bank Transfer
+                                        </option>
+                                        <option value="cash">Cash</option>
+                                    </flux:select>
+                                    <flux:error name="paymentMethod" />
+                                </flux:field> -->
+
+                                <flux:button
+                                    type="submit"
+                                    class="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg transition"
+                                >
+                                    Confirm Purchase
+                                </flux:button>
+                            </form>
+                        </flux:modal>
                     </div>
 
                     @if (session()->has('success'))

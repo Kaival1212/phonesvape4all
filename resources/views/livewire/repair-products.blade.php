@@ -37,7 +37,7 @@
                     <img
                         src="{{ Storage::disk('r2')->url($product->image) }}"
                         alt="{{ $product->name }}"
-                        class="w-full h-48 object-cover"
+                        class="w-full h-full object-cover"
                     />
                     @if($product->is_repairable)
                     <span

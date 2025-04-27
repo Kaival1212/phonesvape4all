@@ -1,19 +1,24 @@
 @props(['store'])
 <header
-    class="bg-white dark:bg-gray-800 py-4 px-4 sm:px-6 border-b border-gray-200 dark:border-gray-700"
+    class="bg-white dark:bg-gray-800 py-4 px-4 border-b border-gray-200 dark:border-gray-700"
 >
     <div
         class="container mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-4"
     >
         <div class="flex flex-col">
-            <h1
-                class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-3 md:mb-0"
-                itemscope
-                itemtype="http://schema.org/Organization"
-            >
-                <span itemprop="name">{{ $store->name }}</span>
-            </h1>
+            <div class="flex items-center space-x-4 cursor-pointer">
+                <img
+                    src="{{ Storage::disk('r2')->url($store->image) }}"
+                    alt="{{ $store->name }}"
+                    class="h-20 md:h-24 w-auto max-w-full rounded-xl object-contain border border-gray-200/50 dark:border-gray-700/50 shadow-lg transition-transform duration-300 hover:scale-105"
+                />
 
+                <h1
+                    class="text-2xl md:text-3xl font-extrabold text-gray-900 dark:text-white leading-tight"
+                >
+                    {{ $store->name }}
+                </h1>
+            </div>
             <!-- Accessible navigation with ARIA labels -->
             <nav
                 aria-label="Main navigation"

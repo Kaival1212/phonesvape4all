@@ -25,8 +25,9 @@ use Filament\Tables\Filters\Filter;
 class BrandResource extends Resource
 {
     protected static ?string $model = Brand::class;
+    protected static ?string $navigationGroup = 'Catalog';
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-cube';
 
     public static function form(Form $form): Form
 {
@@ -48,6 +49,22 @@ class BrandResource extends Resource
                 ->disk('r2')
                 ->visibility('public')
                 ->imageEditor()
+                ->imageEditorAspectRatios([
+                    '16:9',
+                    '4:3',
+                    '1:1',
+                    '3:4',
+                    '9:16',
+                    '2:3',
+                ])
+                ->image()
+                //->imageCropAspectRatio('1:1')
+                ->imageResizeMode('contain')
+                ->imageResizeTargetWidth(800)
+                ->imageResizeTargetHeight(800)
+                ->imagePreviewHeight(150)
+                ->columnSpanFull()
+                ->required()
                 ->columnSpanFull()
 
         ]);
