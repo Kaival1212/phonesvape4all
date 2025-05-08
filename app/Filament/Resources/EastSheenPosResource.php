@@ -2,8 +2,7 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\RepairBookingResource\Pages;
-use App\Filament\Resources\RepairBookingResource\RelationManagers;
+use App\Filament\Resources\EastSheenPosResource\Pages;
 use App\Models\RepairBooking;
 use App\Models\RepairService;
 use Filament\Forms;
@@ -13,18 +12,27 @@ use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Forms\Components\Repeater;
 
-class RepairBookingResource extends Resource
+class EastSheenPosResource extends Resource
 {
     protected static ?string $model = RepairBooking::class;
-    protected static ?string $navigationGroup = 'Orders & Bookings';
-    protected static ?string $navigationIcon = 'heroicon-o-calendar';
+    protected static ?string $navigationGroup = 'Store POS';
+    protected static ?string $navigationIcon = 'heroicon-o-computer-desktop';
+    protected static ?string $navigationLabel = 'East Sheen POS';
+    protected static ?int $navigationSort = 3;
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
+                Forms\Components\Select::make('product_id')
+                    ->relationship('product', 'name')
+                    ->label('Product')
+                    ->required()
+                    ->searchable()
+                    ->preload(),
+
                 Forms\Components\Select::make('repair_services')
                     ->multiple()
                     ->relationship('repairServices', 'name')
@@ -35,31 +43,26 @@ class RepairBookingResource extends Resource
                     ->afterStateUpdated(function ($state, Forms\Set $set, Forms\Get $get) {
                         $totalAmount = 0;
                         $totalDiscount = 0;
-
                         if ($state) {
-                            $services = RepairService::whereIn('id', $state)->get();
+                            $services = \App\Models\RepairService::whereIn('id', $state)->get();
                             foreach ($services as $service) {
                                 $totalAmount += $service->price;
                                 $totalDiscount += $service->discount ?? 0;
                             }
                         }
-
                         $set('total_amount', $totalAmount);
                         $set('total_discount', $totalDiscount);
                         $set('final_amount', $totalAmount - $totalDiscount);
                     })
-                    ->afterStateHydrated(function (Forms\Components\Select $component, $state, ?RepairBooking $record) {
+                    ->afterStateHydrated(function (Forms\Components\Select $component, $state, ?\App\Models\RepairBooking $record) {
                         if ($record) {
                             $component->state($record->repairServices->pluck('id')->toArray());
                         }
                     })
-                    ->saveRelationshipsUsing(function (RepairBooking $record, $state) {
-                        // First, detach all existing services
+                    ->saveRelationshipsUsing(function (\App\Models\RepairBooking $record, $state) {
                         $record->repairServices()->detach();
-
-                        // Then attach the new services with their prices
                         if ($state) {
-                            $services = RepairService::whereIn('id', $state)->get();
+                            $services = \App\Models\RepairService::whereIn('id', $state)->get();
                             foreach ($services as $service) {
                                 $record->repairServices()->attach($service->id, [
                                     'price' => $service->price,
@@ -88,19 +91,18 @@ class RepairBookingResource extends Resource
 
                 Forms\Components\DatePicker::make('selected_date')
                     ->required()
-                    ->label('Selected Date')
+                    ->label('Service Date')
                     ->default(now())
-                    ->minDate(now())
-                    ->placeholder('Enter selected date')
+                    ->placeholder('Enter service date')
                     ->date(),
 
                 Forms\Components\TimePicker::make('selected_time')
                     ->required()
-                    ->label('Selected Time')
+                    ->label('Service Time')
                     ->default(now())
                     ->hoursStep(1)
-                    ->minutesStep(60)
-                    ->placeholder('Enter selected time')
+                    ->seconds(false)
+                    ->placeholder('Enter service time')
                     ->time(),
 
                 Forms\Components\Select::make('status')
@@ -109,7 +111,7 @@ class RepairBookingResource extends Resource
                         'confirmed' => 'Confirmed',
                         'cancelled' => 'Cancelled',
                     ])
-                    ->default('pending')
+                    ->default('confirmed')
                     ->label('Status'),
 
                 Forms\Components\TextInput::make('notes')
@@ -122,28 +124,27 @@ class RepairBookingResource extends Resource
                         'paid' => 'Paid',
                         'failed' => 'Failed',
                     ])
-                    ->default('pending')
+                    ->default('paid')
                     ->label('Payment Status'),
 
                 Forms\Components\Select::make('payment_method')
                     ->options([
                         'card' => 'Card',
-                        'stripe' => 'Stripe',
-                        'bank_transfer' => 'Bank Transfer',
                         'cash' => 'Cash',
+                        'bank_transfer' => 'Bank Transfer',
                     ])
+                    ->default('cash')
                     ->label('Payment Method'),
-
-                Forms\Components\TextInput::make('transaction_id')
-                    ->label('Transaction ID')
-                    ->placeholder('Enter transaction ID'),
 
                 Forms\Components\TextInput::make('total_amount')
                     ->required()
                     ->label('Total Amount')
                     ->placeholder('Enter total amount')
                     ->numeric()
-                    ->disabled(),
+                    ->afterStateUpdated(function ($state, Forms\Set $set, Forms\Get $get) {
+                        $totalDiscount = $get('total_discount');
+                        $set('final_amount', $state - $totalDiscount);
+                    }),
 
                 Forms\Components\TextInput::make('total_discount')
                     ->label('Total Discount')
@@ -162,13 +163,11 @@ class RepairBookingResource extends Resource
                     ->label('Final Amount')
                     ->placeholder('Enter final amount')
                     ->numeric()
-                    ->disabled(),
-
-                Forms\Components\Select::make('store_id')
-                    ->relationship('store', 'name')
-                    ->label('Store')
-                    ->required()
-                    ->placeholder('Select store'),
+                    ->afterStateUpdated(function ($state, Forms\Set $set, Forms\Get $get) {
+                        $totalAmount = $get('total_amount');
+                        $totalDiscount = $totalAmount - $state;
+                        $set('total_discount', max(0, $totalDiscount));
+                    }),
             ]);
     }
 
@@ -236,12 +235,6 @@ class RepairBookingResource extends Resource
                     ->searchable()
                     ->toggleable(),
 
-                TextColumn::make('transaction_id')
-                    ->label('Transaction ID')
-                    ->sortable()
-                    ->searchable()
-                    ->toggleable(),
-
                 TextColumn::make('total_amount')
                     ->label('Subtotal')
                     ->money('GBP')
@@ -263,12 +256,6 @@ class RepairBookingResource extends Resource
                     ->searchable()
                     ->toggleable(),
 
-                TextColumn::make('store.name')
-                    ->label('Store')
-                    ->sortable()
-                    ->searchable()
-                    ->toggleable(),
-
                 TextColumn::make('created_at')
                     ->label('Created At')
                     ->sortable()
@@ -281,6 +268,10 @@ class RepairBookingResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\Action::make('print')
+                    ->icon('heroicon-o-printer')
+                    ->url(fn (RepairBooking $record): string => route('print.repair-receipt', $record))
+                    ->openUrlInNewTab(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -289,19 +280,18 @@ class RepairBookingResource extends Resource
             ]);
     }
 
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
-    }
-
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListRepairBookings::route('/'),
-            'create' => Pages\CreateRepairBooking::route('/create'),
-            'edit' => Pages\EditRepairBooking::route('/{record}/edit'),
+            'index' => Pages\ListEastSheenPos::route('/'),
+            'create' => Pages\CreateEastSheenPos::route('/create'),
+            'edit' => Pages\EditEastSheenPos::route('/{record}/edit'),
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->where('store_id', 3); // East Sheen store ID
     }
 }

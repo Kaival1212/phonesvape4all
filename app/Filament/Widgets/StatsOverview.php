@@ -73,11 +73,11 @@ class StatsOverview extends BaseWidget
         $repairRevThis  = RepairBooking::where('status','completed')
             ->whereYear('created_at',$thisYear)
             ->whereMonth('created_at',$thisMonth)
-            ->sum('total');
+            ->sum('final_amount');
         $repairRevLast  = RepairBooking::where('status','completed')
             ->whereYear('created_at',$lastMonth->year)
             ->whereMonth('created_at',$lastMonth->month)
-            ->sum('total');
+            ->sum('final_amount');
         $repairRevDelta = $repairRevLast
             ? round((($repairRevThis - $repairRevLast) / $repairRevLast) * 100, 1)
             : 0;
@@ -88,8 +88,8 @@ class StatsOverview extends BaseWidget
         $topSalesStore = Store::withSum(['sellBookings' => fn($q) => $q->where('status','completed')], 'total')
             ->orderByDesc('sell_bookings_sum_total')
             ->first();
-        $topRepairStore = Store::withSum(['repairBookings' => fn($q) => $q->where('status','completed')], 'total')
-            ->orderByDesc('repair_bookings_sum_total')
+        $topRepairStore = Store::withSum(['repairBookings' => fn($q) => $q->where('status','completed')], 'final_amount')
+            ->orderByDesc('repair_bookings_sum_final_amount')
             ->first();
 
         //
@@ -149,7 +149,7 @@ class StatsOverview extends BaseWidget
                 ->color('primary'),
 
             Stat::make('Top Repair Store',  $topRepairStore
-                    ? "{$topRepairStore->name}: £" . number_format($topRepairStore->repair_bookings_sum_total ?? 0, 2)
+                    ? "{$topRepairStore->name}: £" . number_format($topRepairStore->repair_bookings_sum_final_amount ?? 0, 2)
                     : 'N/A')
                 ->icon('heroicon-o-home')
                 ->color('primary'),

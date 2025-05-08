@@ -13,8 +13,6 @@ return new class extends Migration
     {
         Schema::create('repair_bookings', function (Blueprint $table) {
             $table->id();
-
-            $table->foreignId('repair_service_id')->constrained('repair_services')->onDelete('cascade');
             $table->string('name');
             $table->string('email');
             $table->string('phone');
@@ -25,14 +23,11 @@ return new class extends Migration
             $table->enum('payment_status', ['pending', 'paid', 'failed'])->default('pending');
             $table->enum('payment_method', ['card', 'stripe', 'bank_transfer' , 'cash'])->nullable();
             $table->string('transaction_id')->nullable();
-
-            $table->double('price');
-            $table->double('discount')->nullable();
-            $table->double('total')->nullable();
+            $table->decimal('total_amount', 10, 2); // Total amount for all services
+            $table->decimal('total_discount', 10, 2)->nullable(); // Total discount for all services
+            $table->decimal('final_amount', 10, 2); // Final amount after all discounts
             $table->string('currency')->default('GBP');
-
             $table->foreignId('store_id')->constrained('stores')->onDelete('cascade');
-
             $table->timestamps();
         });
     }

@@ -14,6 +14,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Str;
 
 class RepairServiceResource extends Resource
 {
@@ -26,81 +27,91 @@ class RepairServiceResource extends Resource
     {
         return $form
             ->schema([
-
-                Forms\Components\Select::make('product_id')
-                    ->relationship('product', 'name')
-                    ->required()
-                    ->label('Product'),
-
                 Forms\Components\TextInput::make('name')
                     ->required()
-                    ->label('Service Name'),
-
+                    ->maxLength(255),
                 Forms\Components\Textarea::make('description')
-                    ->label('Description'),
-
-                Forms\Components\FileUpload::make('image')
-                    ->disk('r2')
-                    ->visibility('public')
-                    ->label('Image'),
-
+                    ->nullable(),
                 Forms\Components\TextInput::make('price')
-                    ->required()
                     ->numeric()
-                    ->label('Price'),
-
+                    ->required(),
+                Forms\Components\TextInput::make('discount')
+                    ->numeric()
+                    ->nullable(),
                 Forms\Components\TextInput::make('estimated_duration_minutes')
                     ->numeric()
-                    ->label('Estimated Duration (minutes)'),
+                    ->nullable(),
+                Forms\Components\FileUpload::make('image')
+                    ->image()
+                    ->directory('repair-services')
+                    ->nullable(),
+                Forms\Components\Select::make('products')
+                    ->relationship('products', 'name')
+                    ->multiple()
+                    ->preload()
+                    ->searchable()
+                    ->createOptionForm([
+                        Forms\Components\TextInput::make('name')
+                            ->required()
+                            ->live(onBlur: true)
+                            ->afterStateUpdated(fn (string $operation, $state, Forms\Set $set) =>
+                                $operation === 'create' ? $set('slug', Str::slug($state)) : null),
+                        Forms\Components\TextInput::make('slug')
+                            ->required()
+                            ->unique(ignoreRecord: true),
+                        Forms\Components\Select::make('category_id')
+                            ->relationship('category', 'name')
+                            ->required(),
+                        Forms\Components\Select::make('brand_id')
+                            ->relationship('brand', 'name')
+                            ->nullable(),
+                        Forms\Components\FileUpload::make('image')
+                            ->image()
+                            ->directory('products')
+                            ->nullable(),
+                        Forms\Components\Textarea::make('description')
+                            ->nullable(),
+                        Forms\Components\Toggle::make('is_selling')
+                            ->default(true),
+                        Forms\Components\Toggle::make('is_repairable')
+                            ->default(false),
+                    ]),
             ]);
-
     }
 
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
-
-                TextColumn::make('id')
-                    ->label('ID')
-                    ->sortable()
+                Tables\Columns\TextColumn::make('name')
                     ->searchable(),
-                TextColumn::make('product.name')
-                    ->label('Product Name')
+                Tables\Columns\TextColumn::make('price')
+                    ->money('GBP')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('discount')
+                    ->money('GBP')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('estimated_duration_minutes')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\ImageColumn::make('image'),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->dateTime()
                     ->sortable()
-                    ->searchable(),
-                TextColumn::make('name')
-                    ->label('Service Name')
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('updated_at')
+                    ->dateTime()
                     ->sortable()
-                    ->searchable(),
-                TextColumn::make('description')
-                    ->label('Description')
-                    ->sortable()
-                    ->limit(20)
-                    ->searchable(),
-
-                ImageColumn::make('image')
-                    ->label('Image')
-                    ->disk('r2')
-                    ->visibility('public'),
-
-                TextColumn::make('price')
-                    ->label('Price')
-                    ->sortable()
-                    ->searchable()
-                    ->money('gbp', true),
-
-                TextColumn::make('estimated_duration_minutes')
-                    ->label('Estimated Duration (minutes)')
-                    ->sortable()
-                    ->searchable(),
-
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('products')
+                    ->relationship('products', 'name')
+                    ->multiple(),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

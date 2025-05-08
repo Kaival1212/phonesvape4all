@@ -1,87 +1,104 @@
-<div class="bg-white text-gray-900">
+<div class="bg-gray-900">
     <!-- Enhanced Slider Section -->
     <div class="relative">
         <!-- Main Slider -->
-        <div class="swiper mySwiper w-full max-h-[450px] md:max-h-[600px]">
+        <div class="swiper mySwiper w-full max-h-[600px] md:max-h-[700px]">
             <div class="swiper-wrapper">
+                <!-- Phone Repair Slide -->
                 <div
                     class="swiper-slide relative"
-                    data-slide-title="First Slide"
+                    data-slide-title="Phone Repairs"
                 >
-                    <img
-                        src="https://fakeimg.pl/2500x1000/111111/"
-                        class="w-full h-full object-cover rounded-b-lg"
-                        alt="First slide description"
-                        loading="eager"
-                    />
+                    <div class="w-full h-[600px] md:h-[700px] bg-gray-900">
+                        <div
+                            class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1616348436168-de43ad0db179?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2071&q=80')] bg-cover bg-center opacity-75"
+                        ></div>
+                    </div>
                     <div
-                        class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"
+                        class="absolute inset-0 bg-gradient-to-r from-gray-900/90 to-transparent"
                     >
                         <div
-                            class="absolute bottom-0 left-0 p-4 md:p-8 text-white"
+                            class="absolute bottom-0 left-0 p-8 md:p-16 text-white max-w-2xl"
                         >
-                            <h2 class="text-2xl md:text-4xl font-bold mb-2">
-                                First Slide Title
+                            <h2 class="text-4xl md:text-6xl font-bold mb-4">
+                                Expert Phone Repairs
                             </h2>
-                            <p
-                                class="hidden md:block text-sm md:text-base mb-4"
-                            >
-                                Brief description of the first slide content
+                            <p class="text-lg md:text-xl mb-8 text-gray-200">
+                                Fast, reliable repairs for all your devices with
+                                same-day service available
                             </p>
+                            <a
+                                href="{{ route('repair') }}"
+                                class="inline-block px-8 py-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition transform hover:-translate-y-1"
+                            >
+                                Book a Repair
+                            </a>
                         </div>
                     </div>
                 </div>
+
+                <!-- Buy Devices Slide -->
                 <div
                     class="swiper-slide relative"
-                    data-slide-title="Second Slide"
+                    data-slide-title="Buy Devices"
                 >
-                    <img
-                        src="https://fakeimg.pl/2500x1000/ff0000/"
-                        class="w-full h-full object-cover rounded-b-lg"
-                        alt="Second slide description"
-                        loading="lazy"
-                    />
+                    <div class="w-full h-[600px] md:h-[700px] bg-gray-900">
+                        <div
+                            class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1598327105666-5b89351aff97?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2072&q=80')] bg-cover bg-center opacity-75"
+                        ></div>
+                    </div>
                     <div
-                        class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"
+                        class="absolute inset-0 bg-gradient-to-r from-gray-900/90 to-transparent"
                     >
                         <div
-                            class="absolute bottom-0 left-0 p-4 md:p-8 text-white"
+                            class="absolute bottom-0 left-0 p-8 md:p-16 text-white max-w-2xl"
                         >
-                            <h2 class="text-2xl md:text-4xl font-bold mb-2">
-                                Second Slide Title
+                            <h2 class="text-4xl md:text-6xl font-bold mb-4">
+                                Premium Devices
                             </h2>
-                            <p
-                                class="hidden md:block text-sm md:text-base mb-4"
-                            >
-                                Brief description of the second slide content
+                            <p class="text-lg md:text-xl mb-8 text-gray-200">
+                                Explore our selection of new and certified
+                                refurbished devices
                             </p>
+                            <a
+                                href="{{ route('buy') }}"
+                                class="inline-block px-8 py-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition transform hover:-translate-y-1"
+                            >
+                                Shop Now
+                            </a>
                         </div>
                     </div>
                 </div>
+
+                <!-- Sell Devices Slide -->
                 <div
                     class="swiper-slide relative"
-                    data-slide-title="Third Slide"
+                    data-slide-title="Sell Devices"
                 >
-                    <img
-                        src="https://fakeimg.pl/2500x1000/00ff00/"
-                        class="w-full h-full object-cover rounded-b-lg"
-                        alt="Third slide description"
-                        loading="lazy"
-                    />
+                    <div class="w-full h-[600px] md:h-[700px] bg-gray-900">
+                        <div
+                            class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1607083206968-13611e3d76db?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80')] bg-cover bg-center opacity-75"
+                        ></div>
+                    </div>
                     <div
-                        class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"
+                        class="absolute inset-0 bg-gradient-to-r from-gray-900/90 to-transparent"
                     >
                         <div
-                            class="absolute bottom-0 left-0 p-4 md:p-8 text-white"
+                            class="absolute bottom-0 left-0 p-8 md:p-16 text-white max-w-2xl"
                         >
-                            <h2 class="text-2xl md:text-4xl font-bold mb-2">
-                                Third Slide Title
+                            <h2 class="text-4xl md:text-6xl font-bold mb-4">
+                                Sell Your Device
                             </h2>
-                            <p
-                                class="hidden md:block text-sm md:text-base mb-4"
-                            >
-                                Brief description of the third slide content
+                            <p class="text-lg md:text-xl mb-8 text-gray-200">
+                                Get instant cash or store credit for your old
+                                devices
                             </p>
+                            <a
+                                href="/sell"
+                                class="inline-block px-8 py-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition transform hover:-translate-y-1"
+                            >
+                                Sell Now
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -89,52 +106,15 @@
 
             <!-- Enhanced Navigation Controls -->
             <div
-                class="swiper-button-next !hidden md:!flex !text-white !right-4 !w-10 !h-10 !bg-black/30 !rounded-full after:!text-xl"
+                class="swiper-button-next !hidden md:!flex !text-white !right-8 !w-12 !h-12 !bg-black/30 !rounded-full after:!text-2xl hover:!bg-black/50 transition"
             ></div>
             <div
-                class="swiper-button-prev !hidden md:!flex !text-white !left-4 !w-10 !h-10 !bg-black/30 !rounded-full after:!text-xl"
+                class="swiper-button-prev !hidden md:!flex !text-white !left-8 !w-12 !h-12 !bg-black/30 !rounded-full after:!text-2xl hover:!bg-black/50 transition"
             ></div>
 
             <!-- Custom Pagination -->
-            <div class="swiper-pagination !bottom-4"></div>
+            <div class="swiper-pagination !bottom-8"></div>
         </div>
-
-        <!-- Thumbnails (Visible on larger screens)
-        <div
-            class="hidden lg:block swiper-thumbs max-w-screen-xl mx-auto px-4 -mt-12 relative z-10"
-        >
-            <div class="swiper thumbSwiper">
-                <div class="swiper-wrapper">
-                    <div class="swiper-slide cursor-pointer p-1">
-                        <div class="bg-white rounded-lg p-2 shadow-md">
-                            <div
-                                class="w-full h-16 bg-gray-900 rounded flex items-center justify-center text-white text-sm"
-                            >
-                                First Slide
-                            </div>
-                        </div>
-                    </div>
-                    <div class="swiper-slide cursor-pointer p-1">
-                        <div class="bg-white rounded-lg p-2 shadow-md">
-                            <div
-                                class="w-full h-16 bg-red-600 rounded flex items-center justify-center text-white text-sm"
-                            >
-                                Second Slide
-                            </div>
-                        </div>
-                    </div>
-                    <div class="swiper-slide cursor-pointer p-1">
-                        <div class="bg-white rounded-lg p-2 shadow-md">
-                            <div
-                                class="w-full h-16 bg-green-600 rounded flex items-center justify-center text-white text-sm"
-                            >
-                                Third Slide
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div> -->
 
         <!-- Progress Bar -->
         <div class="swiper-progress-bar">

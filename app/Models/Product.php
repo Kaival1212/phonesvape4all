@@ -4,6 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Product extends Model
 {
@@ -21,28 +24,37 @@ class Product extends Model
         'is_repairable',
     ];
 
-    public function category() {
+    public function category(): BelongsTo
+    {
         return $this->belongsTo(Category::class);
     }
 
-    public function brand() {
+    public function brand(): BelongsTo
+    {
         return $this->belongsTo(Brand::class);
     }
 
-    public function variants() {
+    public function variants(): HasMany
+    {
         return $this->hasMany(ProductVariant::class);
     }
 
-    public function repairServices() {
-        return $this->hasMany(RepairService::class);
+    public function repairServices(): BelongsToMany
+    {
+        return $this->belongsToMany(RepairService::class, 'product_repair_service');
     }
 
-    public function stores() {
+    public function stores(): BelongsToMany
+    {
         return $this->belongsToMany(Store::class, 'product_store_inventory')
                     ->withPivot('quantity')
                     ->withTimestamps();
     }
 
+    public function repairBookings(): HasMany
+    {
+        return $this->hasMany(RepairBooking::class);
+    }
 }
 
 

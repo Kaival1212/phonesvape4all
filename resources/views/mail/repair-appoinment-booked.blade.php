@@ -59,87 +59,62 @@
                         <td style="padding: 10px">#{{ $repairBooking->id }}</td>
                     </tr>
 
-                    <!-- Service -->
+                    <!-- Services -->
                     <tr>
                         <td style="padding: 10px; font-weight: bold">
-                            Service
+                            Services
                         </td>
                         <td style="padding: 10px">
-                            {{ $repairBooking->repairService->name ?? 'N/A' }}
-                            for
-                            {{ $repairBooking->repairService->product->name ?? 'N/A' }}
+                            <ul style="list-style: none; padding: 0; margin: 0">
+                                @foreach($repairBooking->repairServices as $service)
+                                <li style="margin-bottom: 8px">
+                                    <strong>{{ $service->name }}</strong>
+                                    <br />
+                                    <span style="color: #666">
+                                        £{{ number_format($service->pivot->price, 2) }}
+                                        @if($service->pivot->discount) - £{{ number_format($service->pivot->discount, 2) }}
+                                        discount @endif
+                                    </span>
+                                </li>
+                                @endforeach
+                            </ul>
                         </td>
                     </tr>
 
-                    <!-- Name -->
-                    <tr style="background: #f9f9f9">
-                        <td style="padding: 10px; font-weight: bold">Name</td>
-                        <td style="padding: 10px">
-                            {{ $repairBooking->name }}
-                        </td>
-                    </tr>
-
-                    <!-- Email -->
-                    <tr>
-                        <td style="padding: 10px; font-weight: bold">Email</td>
-                        <td style="padding: 10px">
-                            {{ $repairBooking->email }}
-                        </td>
-                    </tr>
-
-                    <!-- Phone -->
-                    <tr style="background: #f9f9f9">
-                        <td style="padding: 10px; font-weight: bold">Phone</td>
-                        <td style="padding: 10px">
-                            {{ $repairBooking->phone }}
-                        </td>
-                    </tr>
-
-                    <!-- Date -->
-                    <tr>
-                        <td style="padding: 10px; font-weight: bold">Date</td>
-                        <td style="padding: 10px">
-                            {{ $repairBooking->selected_date }}
-                        </td>
-                    </tr>
-
-                    <!-- Time -->
-                    <tr style="background: #f9f9f9">
-                        <td style="padding: 10px; font-weight: bold">Time</td>
-                        <td style="padding: 10px">
-                            {{ $repairBooking->selected_time }}
-                        </td>
-                    </tr>
-
-                    <!-- Price -->
-                    <tr>
-                        <td style="padding: 10px; font-weight: bold">Price</td>
-                        <td style="padding: 10px">
-                            £{{ number_format($repairBooking->price, 2) }}
-                        </td>
-                    </tr>
-
-                    @if ($repairBooking->discount)
-                    <!-- Discount -->
+                    <!-- Total Amount -->
                     <tr style="background: #f9f9f9">
                         <td style="padding: 10px; font-weight: bold">
-                            Discount
+                            Total Amount
                         </td>
                         <td style="padding: 10px">
-                            −£{{ number_format($repairBooking->discount, 2) }}
+                            £{{ number_format($repairBooking->total_amount, 2) }}
                         </td>
                     </tr>
-                    <!-- Total -->
+
+                    @if($repairBooking->total_discount)
+                    <!-- Total Discount -->
                     <tr>
-                        <td style="padding: 10px; font-weight: bold">Total</td>
+                        <td style="padding: 10px; font-weight: bold">
+                            Total Discount
+                        </td>
                         <td style="padding: 10px">
-                            £{{ number_format($repairBooking->total ?? ($repairBooking->price - $repairBooking->discount), 2) }}
+                            -£{{ number_format($repairBooking->total_discount, 2) }}
                         </td>
                     </tr>
                     @endif
 
-                    <!-- Store -->
+                    <!-- Final Amount -->
                     <tr style="background: #f9f9f9">
+                        <td style="padding: 10px; font-weight: bold">
+                            Final Amount
+                        </td>
+                        <td style="padding: 10px">
+                            £{{ number_format($repairBooking->final_amount, 2) }}
+                        </td>
+                    </tr>
+
+                    <!-- Store -->
+                    <tr>
                         <td style="padding: 10px; font-weight: bold">Store</td>
                         <td style="padding: 10px">
                             {{ $repairBooking->store->name ?? 'N/A' }} –
@@ -149,7 +124,7 @@
 
                     @if ($repairBooking->notes)
                     <!-- Notes -->
-                    <tr>
+                    <tr style="background: #f9f9f9">
                         <td style="padding: 10px; font-weight: bold">Notes</td>
                         <td style="padding: 10px">
                             {{ $repairBooking->notes }}

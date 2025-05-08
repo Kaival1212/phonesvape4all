@@ -15,22 +15,32 @@ class RepairProduct extends Component
     public $categoriesSlug;
     public $brandSlug;
 
-    public function mount($brandSlug , $categoriesSlug)
+    public function mount($brandSlug, $categoriesSlug)
     {
-
         $this->brand = Brand::where('slug', $brandSlug)->first();
         $this->categoriesSlug = $categoriesSlug;
         $this->brandSlug = $brandSlug;
-
     }
 
     public function render()
     {
-        return view('livewire.repair-products' , [
-            'products' =>  Product::where('is_repairable', true)
+        $products = Product::where('is_repairable', true)
             ->where('brand_id', $this->brand->id)
             ->where('name', 'like', '%' . $this->search . '%')
-            ->get()
+            ->get();
+
+        // Check if any product has repair services
+        $hasRepairServices = false;
+        foreach ($products as $product) {
+            if ($product->repairServices()->exists()) {
+                $hasRepairServices = true;
+                break;
+            }
+        }
+
+        return view('livewire.repair-products', [
+            'products' => $products,
+            'hasRepairServices' => $hasRepairServices
         ]);
     }
 }

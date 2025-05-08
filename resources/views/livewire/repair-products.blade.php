@@ -1,16 +1,12 @@
 <!-- Product Display Section -->
-<section
-    class="bg-white dark:bg-gray-900 py-16 border-b border-gray-200 dark:border-gray-700"
->
+<section class="bg-white py-16 border-b border-gray-200">
     <div class="container mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Section Heading -->
         <div class="text-center mb-12">
-            <h2
-                class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white"
-            >
+            <h2 class="text-3xl sm:text-4xl font-bold text-black">
                 Available Products
             </h2>
-            <p class="mt-4 text-lg text-gray-600 dark:text-gray-300">
+            <p class="mt-4 text-lg text-gray-600">
                 Browse our selection of repairable devices
             </p>
         </div>
@@ -21,7 +17,7 @@
                 type="text"
                 wire:model.live="search"
                 placeholder="Search for a product..."
-                class="w-full px-5 py-3 border border-gray-300 dark:border-gray-700 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition"
+                class="w-full px-5 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-black focus:border-black bg-white text-black placeholder-gray-500 transition"
             />
         </div>
 
@@ -31,7 +27,7 @@
         >
             @foreach($products as $product)
             <div
-                class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden shadow hover:shadow-xl transition duration-300"
+                class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow hover:shadow-xl transition duration-300"
             >
                 <div class="relative">
                     <img
@@ -41,7 +37,7 @@
                     />
                     @if($product->is_repairable)
                     <span
-                        class="absolute top-2 right-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full shadow"
+                        class="absolute top-2 right-2 bg-black text-white text-xs px-2 py-1 rounded-full shadow"
                     >
                         Repairable
                     </span>
@@ -49,24 +45,20 @@
                 </div>
                 <div class="p-4">
                     <div class="flex items-center justify-between mb-2">
-                        <h3
-                            class="text-lg font-semibold text-gray-900 dark:text-white"
-                        >
+                        <h3 class="text-lg font-semibold text-black">
                             {{ $product->name }}
                         </h3>
-                        <span class="text-sm text-gray-500 dark:text-gray-400">
+                        <span class="text-sm text-gray-600">
                             {{ $product->brand->name }}
                         </span>
                     </div>
-                    <p
-                        class="text-sm text-gray-600 dark:text-gray-300 mb-4 line-clamp-2"
-                    >
+                    <p class="text-sm text-gray-600 mb-4 line-clamp-2">
                         {{ $product->description }}
                     </p>
                     <div class="text-center">
                         <a
-                            href="{{ route('repair.product.service', [$categoriesSlug, $brandSlug, $product->id]) }}"
-                            class="inline-block bg-blue-600 hover:bg-blue-700 text-white text-sm py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+                            href="{{ route('repair.service.selection', [$categoriesSlug, $brandSlug, $product->id]) }}"
+                            class="inline-block bg-black hover:bg-gray-800 text-white text-sm py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-black transition"
                         >
                             Book Repair
                         </a>

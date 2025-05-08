@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class RepairService extends Model
 {
@@ -11,13 +12,18 @@ class RepairService extends Model
     use HasFactory;
 
     protected $fillable = [
-        'product_id',
         'name',
         'description',
         'price',
+        'discount',
         'estimated_duration_minutes',
-        'image',
+        'image'
     ];
+
+    public function products(): BelongsToMany
+    {
+        return $this->belongsToMany(Product::class, 'product_repair_service');
+    }
 
     public function product()
     {

@@ -7,17 +7,19 @@
     >
         <div class="flex flex-col">
             <div class="flex items-center space-x-4 cursor-pointer">
-                <img
-                    src="{{ Storage::disk('r2')->url($store->image) }}"
-                    alt="{{ $store->name }}"
-                    class="h-20 md:h-24 w-auto max-w-full rounded-xl object-contain border border-gray-200/50 dark:border-gray-700/50 shadow-lg transition-transform duration-300 hover:scale-105"
-                />
+                <a href="/" class="flex items-center space-x-4">
+                    <img
+                        src="{{ Storage::disk('r2')->url($store->image) }}"
+                        alt="{{ $store->name }}"
+                        class="h-20 md:h-24 w-auto max-w-full rounded-xl object-contain border border-gray-200/50 dark:border-gray-700/50 shadow-lg transition-transform duration-300 hover:scale-105"
+                    />
 
-                <h1
-                    class="text-2xl md:text-3xl font-extrabold text-gray-900 dark:text-white leading-tight"
-                >
-                    {{ $store->name }}
-                </h1>
+                    <h1
+                        class="text-2xl md:text-3xl font-extrabold text-gray-900 dark:text-white leading-tight"
+                    >
+                        {{ $store->name }}
+                    </h1>
+                </a>
             </div>
             <!-- Accessible navigation with ARIA labels -->
             <nav

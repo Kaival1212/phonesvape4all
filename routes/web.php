@@ -39,8 +39,13 @@ Route::get('/store/united-tech-vape-caterham', function () {
 Route::get('/services/repair', Repair::class)->name('repair');
 Route::get('/services/repair/{categoriesSlug}', RepairBrand::class)->name('repair.category');
 Route::get('/services/repair/{categoriesSlug}/{brandSlug}', RepairProduct::class)->name('repair.product');
-Route::get('/services/repair/{categoriesSlug}/{brandSlug}/{productID}/repair', RepairServiceSelection::class)->name('repair.product.service');
-Route::get('/services/repair/{categoriesSlug}/{brandSlug}/{productID}/{repairServiceID}/book', RepairBookingForm::class)->name('repair.product.form');
+Route::get('/services/repair/{categoriesSlug}/{brandSlug}/{productID}/repair', RepairServiceSelection::class)->name('repair.service.selection');
+Route::get('/services/repair/{categoriesSlug}/{brandSlug}/{productID}/book', RepairBookingForm::class)->name('repair.product.form.model');
+Route::get('/services/repair/{categoriesSlug}/{brandSlug}/{productID}/{repairServiceID}/book', RepairBookingForm::class)->name('repair.product.form.service');
+Route::get('/repair/booking/{repairBooking}/confirmation', function (App\Models\RepairBooking $repairBooking) {
+    $repairBooking->load(['product', 'store']);
+    return view('repair.booking-confirmation', compact('repairBooking'));
+})->name('repair.booking.confirmation');
 
 
 Route::get('/services/buy', Buy::class)->name('buy');
@@ -65,5 +70,9 @@ Route::middleware(['auth'])->group(function () {
 // Route::get('/admin', function() {
 //     dd('admin');
 // })->middleware(['auth', 'admin'])->name('admin');
+
+Route::get('/print/repair-receipt/{repairBooking}', function (App\Models\RepairBooking $repairBooking) {
+    return view('print.repair-receipt', compact('repairBooking'));
+})->name('print.repair-receipt');
 
 require __DIR__.'/auth.php';

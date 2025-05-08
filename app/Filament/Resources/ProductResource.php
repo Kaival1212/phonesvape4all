@@ -21,6 +21,7 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Str;
 
 class ProductResource extends Resource
 {
@@ -46,9 +47,12 @@ class ProductResource extends Resource
                 TextInput::make('name')
                     ->required()
                     ->label('Product Name')
-                    ->maxLength(255),
+                    ->maxLength(255)
+                    ->live(onBlur: true)
+                    ->afterStateUpdated(fn (string $operation, $state, Forms\Set $set) =>
+                        $operation === 'create' ? $set('slug', Str::slug($state)) : null),
 
-                    TextInput::make('slug')
+                TextInput::make('slug')
                     ->required()
                     ->maxLength(255)
                     ->unique(ignoreRecord: true)
@@ -68,14 +72,38 @@ class ProductResource extends Resource
                     ->maxLength(65535)
                     ->columnSpanFull(),
 
-                    Toggle::make('is_selling')
+                Toggle::make('is_selling')
                     ->label('Is Selling')
                     ->default(true),
 
-                    Toggle::make('is_repairable')
+                Toggle::make('is_repairable')
                     ->label('Is Repairable')
-                    ->default(true)
+                    ->default(false),
 
+                Select::make('repairServices')
+                    ->relationship('repairServices', 'name')
+                    ->multiple()
+                    ->preload()
+                    ->searchable()
+                    ->createOptionForm([
+                        TextInput::make('name')
+                            ->required(),
+                        TextInput::make('description')
+                            ->nullable(),
+                        TextInput::make('price')
+                            ->numeric()
+                            ->required(),
+                        TextInput::make('discount')
+                            ->numeric()
+                            ->nullable(),
+                        TextInput::make('estimated_duration_minutes')
+                            ->numeric()
+                            ->nullable(),
+                        FileUpload::make('image')
+                            ->image()
+                            ->directory('repair-services')
+                            ->nullable(),
+                    ]),
             ]);
     }
 
@@ -83,7 +111,6 @@ class ProductResource extends Resource
     {
         return $table
             ->columns([
-
                 Tables\Columns\TextColumn::make('id')
                     ->label('ID')
                     ->sortable()
@@ -123,12 +150,27 @@ class ProductResource extends Resource
                     ->sortable()
                     ->searchable(),
 
+                Tables\Columns\TextColumn::make('created_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
+                Tables\Columns\TextColumn::make('updated_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('category')
+                    ->relationship('category', 'name'),
+                Tables\Filters\SelectFilter::make('brand')
+                    ->relationship('brand', 'name'),
+                Tables\Filters\TernaryFilter::make('is_selling'),
+                Tables\Filters\TernaryFilter::make('is_repairable'),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

@@ -14,7 +14,6 @@ class RepairBooking extends Model
     use HasFactory;
 
     protected $fillable = [
-        'repair_service_id',
         'name',
         'email',
         'phone',
@@ -25,44 +24,57 @@ class RepairBooking extends Model
         'payment_status',
         'payment_method',
         'transaction_id',
-        'price',
-        'discount',
-        'total',
+        'total_amount',
+        'total_discount',
+        'final_amount',
         'currency',
-        'store_id'
+        'store_id',
+        'product_id'
     ];
 
     protected static function booted()
     {
-
         static::created(function ($repairBooking) {
-
             $email = $repairBooking->email;
-
-            Mail::to($email)->send(new RepairAppoinmentBooked(
-                $repairBooking
-            ));
+            Mail::to($email)->send(new RepairAppoinmentBooked($repairBooking));
         });
 
         static::updated(function ($repairBooking) {
             if ($repairBooking->isDirty('payment_status') && $repairBooking->payment_status == 'paid') {
                 $email = $repairBooking->email;
-
-                Mail::to($email)->send(new ThanksForRepairPayment(
-                    $repairBooking
-                ));
+                Mail::to($email)->send(new ThanksForRepairPayment($repairBooking));
             }
         });
-
     }
 
-    public function repairService()
+    public function repairServices()
     {
-        return $this->belongsTo(RepairService::class);
+        return $this->belongsToMany(RepairService::class, 'repair_booking_services')
+            ->withPivot(['price', 'discount', 'total'])
+            ->withTimestamps();
     }
+
     public function store()
     {
         return $this->belongsTo(Store::class);
+    }
+
+    public function product()
+    {
+        return $this->belongsTo(Product::class);
+    }
+
+    public function calculateTotals()
+    {
+        $totalAmount = $this->repairServices->sum('pivot.price');
+        $totalDiscount = $this->repairServices->sum('pivot.discount');
+        $finalAmount = $totalAmount - $totalDiscount;
+
+        $this->update([
+            'total_amount' => $totalAmount,
+            'total_discount' => $totalDiscount,
+            'final_amount' => $finalAmount
+        ]);
     }
 }
 

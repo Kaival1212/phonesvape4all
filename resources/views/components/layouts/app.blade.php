@@ -200,8 +200,8 @@ locations.', 'image' => null, 'store' => null ]) @php use App\Models\Store; if
     </script>
 
     <body class="bg-white text-gray-800 antialiased flex flex-col min-h-screen">
-        <x-sub-header :store="$store" />
 
+        <x-sub-header :store="$store" />
         <div class="flex-grow">
             {{ $slot }}
         </div>

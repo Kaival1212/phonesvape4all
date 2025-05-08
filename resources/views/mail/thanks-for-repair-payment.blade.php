@@ -74,9 +74,8 @@
                         line-height: 1.6;
                     "
                 >
-                    Thank you for your payment for the
-                    <strong>{{ $repairService->name }}</strong> service at
-                    <strong>{{ $store->name }}</strong
+                    Thank you for your payment for the repair services at
+                    <strong>{{ $repairBooking->store->name }}</strong
                     >. We really appreciate your business and hope you're
                     completely satisfied with the work we've done!
                 </p>
@@ -114,10 +113,29 @@
                                     border-radius: 6px 0 0 6px;
                                 "
                             >
-                                Service Description
+                                Services
                             </th>
                             <td style="padding: 12px 15px">
-                                {{ $repairService->name }}
+                                <ul
+                                    style="
+                                        list-style: none;
+                                        padding: 0;
+                                        margin: 0;
+                                    "
+                                >
+                                    @foreach($repairBooking->repairServices as
+                                    $service)
+                                    <li style="margin-bottom: 8px">
+                                        <strong>{{ $service->name }}</strong>
+                                        <br />
+                                        <span style="color: #666">
+                                            £{{ number_format($service->pivot->price, 2) }}
+                                            @if($service->pivot->discount) - £{{ number_format($service->pivot->discount, 2) }}
+                                            discount @endif
+                                        </span>
+                                    </li>
+                                    @endforeach
+                                </ul>
                             </td>
                         </tr>
                         <tr style="border-bottom: 1px solid #e5e7eb">
@@ -133,7 +151,8 @@
                                 Service Date
                             </th>
                             <td style="padding: 12px 15px">
-                                {{ $repairBooking->completed_at ? $repairBooking->completed_at->format('d M Y') : now()->format('d M Y') }}
+                                {{ $repairBooking->selected_date }} at
+                                {{ $repairBooking->selected_time }}
                             </td>
                         </tr>
                         <tr style="border-bottom: 1px solid #e5e7eb">
@@ -146,7 +165,7 @@
                                     color: #1f2937;
                                 "
                             >
-                                Amount
+                                Total Amount
                             </th>
                             <td
                                 style="
@@ -155,10 +174,10 @@
                                     color: #2563eb;
                                 "
                             >
-                                £{{ number_format($repairBooking->price ?? 0, 2) }}
+                                £{{ number_format($repairBooking->total_amount, 2) }}
                             </td>
                         </tr>
-                        @if($repairBooking->discount)
+                        @if($repairBooking->total_discount)
                         <tr style="border-bottom: 1px solid #e5e7eb">
                             <th
                                 style="
@@ -169,18 +188,19 @@
                                     color: #1f2937;
                                 "
                             >
-                                Discount Applied
+                                Total Discount
                             </th>
                             <td
                                 style="
                                     padding: 12px 15px;
-                                    color: #10b981;
+                                    color: #dc2626;
                                     font-weight: 600;
                                 "
                             >
-                                -£{{ number_format($repairBooking->discount, 2) }}
+                                -£{{ number_format($repairBooking->total_discount, 2) }}
                             </td>
                         </tr>
+                        @endif
                         <tr style="border-bottom: 1px solid #e5e7eb">
                             <th
                                 style="
@@ -191,7 +211,7 @@
                                     color: #1f2937;
                                 "
                             >
-                                Total Paid
+                                Final Amount
                             </th>
                             <td
                                 style="
@@ -201,10 +221,9 @@
                                     font-size: 16px;
                                 "
                             >
-                                £{{ number_format($repairBooking->total ?? ($repairBooking->price - $repairBooking->discount), 2) }}
+                                £{{ number_format($repairBooking->final_amount, 2) }}
                             </td>
                         </tr>
-                        @endif
                         <tr style="border-bottom: 1px solid #e5e7eb">
                             <th
                                 style="
@@ -282,25 +301,25 @@
                     <p style="font-size: 15px; margin-bottom: 5px">
                         <strong>Phone:</strong>
                         <a
-                            href="tel:{{ $store->phone }}"
+                            href="tel:{{ $repairBooking->store->phone }}"
                             style="
                                 color: #2563eb;
                                 text-decoration: none;
                                 font-weight: 500;
                             "
-                            >{{ $store->phone }}</a
+                            >{{ $repairBooking->store->phone }}</a
                         >
                     </p>
                     <p style="font-size: 15px; margin-bottom: 5px">
                         <strong>Email:</strong>
                         <a
-                            href="mailto:{{ $store->email ?? 'support@' . str_replace(' ', '', strtolower($store->name)) . '.com' }}"
+                            href="mailto:{{ $repairBooking->store->email ?? 'support@' . str_replace(' ', '', strtolower($repairBooking->store->name)) . '.com' }}"
                             style="
                                 color: #2563eb;
                                 text-decoration: none;
                                 font-weight: 500;
                             "
-                            >{{ $store->email ?? 'support@' . str_replace(' ', '', strtolower($store->name)) . '.com' }}</a
+                            >{{ $repairBooking->store->email ?? 'support@' . str_replace(' ', '', strtolower($repairBooking->store->name)) . '.com' }}</a
                         >
                     </p>
                 </div>
@@ -311,11 +330,12 @@
                         Thanks again for choosing
                         <span
                             style="font-weight: 700; color: #1f2937"
-                            >{{ $store->name }}</span
+                            >{{ $repairBooking->store->name }}</span
                         >—we value your trust in our service!
                     </p>
                     <p style="margin-top: 10px">
-                        Best regards,<br />The {{ $store->name }} Team
+                        Best regards,<br />The
+                        {{ $repairBooking->store->name }} Team
                     </p>
                 </div>
             </div>
@@ -332,8 +352,8 @@
                 "
             >
                 <p>
-                    &copy; {{ now()->year }} {{ $store->name }}. All rights
-                    reserved.
+                    &copy; {{ now()->year }} {{ $repairBooking->store->name }}.
+                    All rights reserved.
                 </p>
                 <p style="margin-top: 15px; font-size: 12px">
                     This email was sent to {{ $repairBooking->email }}. If you
