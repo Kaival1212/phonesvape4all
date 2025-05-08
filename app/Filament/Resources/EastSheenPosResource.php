@@ -292,6 +292,6 @@ class EastSheenPosResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()
-            ->where('store_id', 3); // East Sheen store ID
+            ->where('store_id', 1); // East Sheen store ID
     }
 }

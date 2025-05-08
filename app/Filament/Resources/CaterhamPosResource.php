@@ -32,6 +32,7 @@ class CaterhamPosResource extends Resource
                     ->required()
                     ->searchable()
                     ->preload(),
+
                 Forms\Components\Select::make('repair_services')
                     ->multiple()
                     ->relationship('repairServices', 'name')
@@ -39,9 +40,7 @@ class CaterhamPosResource extends Resource
                     ->searchable()
                     ->required()
                     ->label('Repair Services')
-                    ->afterStateUpdated(function (
-                        $state, Forms\Set $set, Forms\Get $get
-                    ) {
+                    ->afterStateUpdated(function ($state, Forms\Set $set, Forms\Get $get) {
                         $totalAmount = 0;
                         $totalDiscount = 0;
                         if ($state) {
@@ -55,16 +54,12 @@ class CaterhamPosResource extends Resource
                         $set('total_discount', $totalDiscount);
                         $set('final_amount', $totalAmount - $totalDiscount);
                     })
-                    ->afterStateHydrated(function (
-                        Forms\Components\Select $component, $state, ?\App\Models\RepairBooking $record
-                    ) {
+                    ->afterStateHydrated(function (Forms\Components\Select $component, $state, ?\App\Models\RepairBooking $record) {
                         if ($record) {
                             $component->state($record->repairServices->pluck('id')->toArray());
                         }
                     })
-                    ->saveRelationshipsUsing(function (
-                        \App\Models\RepairBooking $record, $state
-                    ) {
+                    ->saveRelationshipsUsing(function (\App\Models\RepairBooking $record, $state) {
                         $record->repairServices()->detach();
                         if ($state) {
                             $services = \App\Models\RepairService::whereIn('id', $state)->get();
@@ -77,6 +72,102 @@ class CaterhamPosResource extends Resource
                             }
                         }
                     }),
+
+                Forms\Components\TextInput::make('name')
+                    ->required()
+                    ->label('Customer Name')
+                    ->placeholder('Enter customer name'),
+
+                Forms\Components\TextInput::make('email')
+                    ->required()
+                    ->label('Customer Email')
+                    ->placeholder('Enter customer email')
+                    ->email(),
+
+                Forms\Components\TextInput::make('phone')
+                    ->required()
+                    ->label('Customer Phone')
+                    ->placeholder('Enter customer phone'),
+
+                Forms\Components\DatePicker::make('selected_date')
+                    ->required()
+                    ->label('Service Date')
+                    ->default(now())
+                    ->placeholder('Enter service date')
+                    ->date(),
+
+                Forms\Components\TimePicker::make('selected_time')
+                    ->required()
+                    ->label('Service Time')
+                    ->default(now())
+                    ->hoursStep(1)
+                    ->seconds(false)
+                    ->placeholder('Enter service time')
+                    ->time(),
+
+                Forms\Components\Select::make('status')
+                    ->options([
+                        'pending' => 'Pending',
+                        'confirmed' => 'Confirmed',
+                        'cancelled' => 'Cancelled',
+                    ])
+                    ->default('confirmed')
+                    ->label('Status'),
+
+                Forms\Components\TextInput::make('notes')
+                    ->label('Notes')
+                    ->placeholder('Enter notes'),
+
+                Forms\Components\Select::make('payment_status')
+                    ->options([
+                        'pending' => 'Pending',
+                        'paid' => 'Paid',
+                        'failed' => 'Failed',
+                    ])
+                    ->default('paid')
+                    ->label('Payment Status'),
+
+                Forms\Components\Select::make('payment_method')
+                    ->options([
+                        'card' => 'Card',
+                        'cash' => 'Cash',
+                        'bank_transfer' => 'Bank Transfer',
+                    ])
+                    ->default('cash')
+                    ->label('Payment Method'),
+
+                Forms\Components\TextInput::make('total_amount')
+                    ->required()
+                    ->label('Total Amount')
+                    ->placeholder('Enter total amount')
+                    ->numeric()
+                    ->afterStateUpdated(function ($state, Forms\Set $set, Forms\Get $get) {
+                        $totalDiscount = $get('total_discount');
+                        $set('final_amount', $state - $totalDiscount);
+                    }),
+
+                Forms\Components\TextInput::make('total_discount')
+                    ->label('Total Discount')
+                    ->placeholder('Enter total discount')
+                    ->numeric()
+                    ->default(0)
+                    ->minValue(0)
+                    ->maxValue(fn (Forms\Get $get) => $get('total_amount'))
+                    ->afterStateUpdated(function ($state, Forms\Set $set, Forms\Get $get) {
+                        $totalAmount = $get('total_amount');
+                        $set('final_amount', $totalAmount - $state);
+                    }),
+
+                Forms\Components\TextInput::make('final_amount')
+                    ->required()
+                    ->label('Final Amount')
+                    ->placeholder('Enter final amount')
+                    ->numeric()
+                    ->afterStateUpdated(function ($state, Forms\Set $set, Forms\Get $get) {
+                        $totalAmount = $get('total_amount');
+                        $totalDiscount = $totalAmount - $state;
+                        $set('total_discount', max(0, $totalDiscount));
+                    }),
             ]);
     }
 
@@ -84,19 +175,109 @@ class CaterhamPosResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('id'),
-                TextColumn::make('name'),
-                TextColumn::make('created_at'),
-                TextColumn::make('updated_at'),
-            ])
-            ->defaultSort('id');
-    }
+                TextColumn::make('id')
+                    ->label('ID')
+                    ->sortable()
+                    ->searchable()
+                    ->toggleable(),
 
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
+                TextColumn::make('name')
+                    ->label('Customer')
+                    ->sortable()
+                    ->searchable()
+                    ->toggleable(),
+
+                TextColumn::make('email')
+                    ->label('Email')
+                    ->sortable()
+                    ->searchable()
+                    ->toggleable(),
+
+                TextColumn::make('phone')
+                    ->label('Phone')
+                    ->sortable()
+                    ->searchable()
+                    ->toggleable(),
+
+                TextColumn::make('repairServices.name')
+                    ->label('Services')
+                    ->listWithLineBreaks()
+                    ->searchable()
+                    ->toggleable(),
+
+                TextColumn::make('selected_date')
+                    ->label('Date')
+                    ->sortable()
+                    ->searchable()
+                    ->toggleable(),
+
+                TextColumn::make('selected_time')
+                    ->label('Time')
+                    ->sortable()
+                    ->searchable()
+                    ->toggleable(),
+
+                TextColumn::make('status')
+                    ->label('Status')
+                    ->sortable()
+                    ->searchable()
+                    ->toggleable(),
+
+                TextColumn::make('payment_status')
+                    ->label('Payment Status')
+                    ->sortable()
+                    ->searchable()
+                    ->toggleable(),
+
+                TextColumn::make('payment_method')
+                    ->label('Payment Method')
+                    ->sortable()
+                    ->searchable()
+                    ->toggleable(),
+
+                TextColumn::make('total_amount')
+                    ->label('Subtotal')
+                    ->money('GBP')
+                    ->sortable()
+                    ->searchable()
+                    ->toggleable(),
+
+                TextColumn::make('total_discount')
+                    ->label('Discount')
+                    ->money('GBP')
+                    ->sortable()
+                    ->searchable()
+                    ->toggleable(),
+
+                TextColumn::make('final_amount')
+                    ->label('Total')
+                    ->money('GBP')
+                    ->sortable()
+                    ->searchable()
+                    ->toggleable(),
+
+                TextColumn::make('created_at')
+                    ->label('Created At')
+                    ->sortable()
+                    ->dateTime()
+                    ->formatStateUsing(fn ($state) => $state->format('d/m/Y H:i:s'))
+                    ->toggleable(),
+            ])
+            ->filters([
+                //
+            ])
+            ->actions([
+                Tables\Actions\EditAction::make(),
+                Tables\Actions\Action::make('print')
+                    ->icon('heroicon-o-printer')
+                    ->url(fn (RepairBooking $record): string => route('print.repair-receipt', $record))
+                    ->openUrlInNewTab(),
+            ])
+            ->bulkActions([
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make(),
+                ]),
+            ]);
     }
 
     public static function getPages(): array
@@ -106,5 +287,11 @@ class CaterhamPosResource extends Resource
             'create' => Pages\CreateCaterhamPos::route('/create'),
             'edit' => Pages\EditCaterhamPos::route('/{record}/edit'),
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->where('store_id', 3); // Caterham store ID
     }
 }

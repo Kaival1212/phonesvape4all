@@ -29,7 +29,10 @@ class RepairBooking extends Model
         'final_amount',
         'currency',
         'store_id',
-        'product_id'
+        'product_id',
+        'address',
+        'city',
+        'postcode'
     ];
 
     protected static function booted()

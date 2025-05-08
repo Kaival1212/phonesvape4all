@@ -16,6 +16,9 @@ return new class extends Migration
             $table->string('name');
             $table->string('email');
             $table->string('phone');
+            $table->string('address')->nullable();
+            $table->string('city')->nullable();
+            $table->string('postcode')->nullable();
             $table->date('selected_date');
             $table->time('selected_time');
             $table->enum('status', ['pending', 'confirmed', 'cancelled'])->default('pending');

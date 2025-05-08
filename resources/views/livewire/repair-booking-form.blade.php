@@ -122,6 +122,88 @@
             </flux:field>
             @endif
 
+            <!-- Service Type Selection -->
+            <flux:field>
+                <flux:label badge="Required">Service Type</flux:label>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
+                    <!-- In-Store Repair -->
+                    <label class="relative flex flex-col items-center p-4 border rounded-xl cursor-pointer transition-all duration-200 hover:shadow-lg hover:border-black {{ $serviceType === 'in_store' ? 'border-black bg-gray-50' : 'border-gray-200' }}">
+                        <input type="radio" wire:model.live="serviceType" value="in_store" class="sr-only">
+                        <div class="w-12 h-12 mb-3 flex items-center justify-center rounded-full bg-gray-100">
+                            <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                            </svg>
+                        </div>
+                        <span class="text-sm font-medium text-gray-900">In-Store Repair</span>
+                        <span class="text-xs text-gray-500 mt-1">Visit our store for repair</span>
+                    </label>
+
+                    <!-- Doorstep Repair -->
+                    <label class="relative flex flex-col items-center p-4 border rounded-xl cursor-pointer transition-all duration-200 hover:shadow-lg hover:border-black {{ $serviceType === 'doorstep' ? 'border-black bg-gray-50' : 'border-gray-200' }}">
+                        <input type="radio" wire:model.live="serviceType" value="doorstep" class="sr-only">
+                        <div class="w-12 h-12 mb-3 flex items-center justify-center rounded-full bg-gray-100">
+                            <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                            </svg>
+                        </div>
+                        <span class="text-sm font-medium text-gray-900">Doorstep Repair</span>
+                        <span class="text-xs text-gray-500 mt-1">We come to your location</span>
+                    </label>
+
+                    <!-- Pick-up & Drop-off -->
+                    <label class="relative flex flex-col items-center p-4 border rounded-xl cursor-pointer transition-all duration-200 hover:shadow-lg hover:border-black {{ $serviceType === 'pickup' ? 'border-black bg-gray-50' : 'border-gray-200' }}">
+                        <input type="radio" wire:model.live="serviceType" value="pickup" class="sr-only">
+                        <div class="w-12 h-12 mb-3 flex items-center justify-center rounded-full bg-gray-100">
+                            <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
+                            </svg>
+                        </div>
+                        <span class="text-sm font-medium text-gray-900">Pick-up & Drop-off</span>
+                        <span class="text-xs text-gray-500 mt-1">We collect and return your device</span>
+                    </label>
+                </div>
+                <flux:error name="serviceType" />
+            </flux:field>
+
+            <!-- Address Fields (shown for doorstep and pickup) -->
+            @if(in_array($serviceType, ['doorstep', 'pickup']))
+            <div class="space-y-6">
+                <flux:field>
+                    <flux:label badge="Required">Delivery Address</flux:label>
+                    <div class="space-y-4">
+                        <flux:input
+                            wire:model.defer="address"
+                            placeholder="Street address"
+                            required
+                            class="focus:border-black focus:ring focus:ring-gray-200"
+                        />
+                        <flux:error name="address" />
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <flux:input
+                                    wire:model.defer="city"
+                                    placeholder="City"
+                                    required
+                                    class="focus:border-black focus:ring focus:ring-gray-200"
+                                />
+                                <flux:error name="city" />
+                            </div>
+                            <div>
+                                <flux:input
+                                    wire:model.defer="postcode"
+                                    placeholder="Postcode"
+                                    required
+                                    class="focus:border-black focus:ring focus:ring-gray-200"
+                                />
+                                <flux:error name="postcode" />
+                            </div>
+                        </div>
+                    </div>
+                </flux:field>
+            </div>
+            @endif
+
             <!-- Customer Information -->
             <flux:field>
                 <flux:label badge="Required">Name</flux:label>

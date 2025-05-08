@@ -33,6 +33,10 @@ class RepairBookingForm extends Component
     public $totalDiscount = 0;
     public $finalAmount = 0;
     public $hasRepairServices = false;
+    public $serviceType = 'in_store'; // Default to in-store
+    public $address;
+    public $city;
+    public $postcode;
 
     public function mount($categoriesSlug, $brandSlug, $productID, $serviceID = null)
     {
@@ -106,6 +110,16 @@ class RepairBookingForm extends Component
         $this->timeSlots = $slots;
     }
 
+    public function updatedServiceType($value)
+    {
+        // Reset address fields if switching to in-store
+        if ($value === 'in_store') {
+            $this->address = null;
+            $this->city = null;
+            $this->postcode = null;
+        }
+    }
+
     public function submit()
     {
         // Base validation rules
@@ -116,7 +130,15 @@ class RepairBookingForm extends Component
             'store_id' => 'required|exists:stores,id',
             'selectedDate' => 'required|date|after_or_equal:today',
             'selectedTime' => 'required|string',
+            'serviceType' => 'required|in:in_store,doorstep,pickup',
         ];
+
+        // Add address validation for doorstep and pickup
+        if (in_array($this->serviceType, ['doorstep', 'pickup'])) {
+            $rules['address'] = 'required|string|min:5';
+            $rules['city'] = 'required|string|min:2';
+            $rules['postcode'] = 'required|string|min:5';
+        }
 
         // Add specific validation rules based on repair service availability
         if ($this->hasRepairServices) {
@@ -155,7 +177,11 @@ class RepairBookingForm extends Component
             'total_amount' => $this->totalAmount,
             'total_discount' => $this->totalDiscount,
             'final_amount' => $this->finalAmount,
-            'currency' => 'GBP'
+            'currency' => 'GBP',
+            'service_type' => $this->serviceType,
+            'address' => $this->address,
+            'city' => $this->city,
+            'postcode' => $this->postcode,
         ]);
 
         if ($this->hasRepairServices) {

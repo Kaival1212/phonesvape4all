@@ -25,6 +25,13 @@ class RepairBookingResource extends Resource
     {
         return $form
             ->schema([
+                Forms\Components\Select::make('product_id')
+                    ->relationship('product', 'name')
+                    ->label('Product')
+                    ->required()
+                    ->searchable()
+                    ->preload(),
+
                 Forms\Components\Select::make('repair_services')
                     ->multiple()
                     ->relationship('repairServices', 'name')
@@ -86,6 +93,18 @@ class RepairBookingResource extends Resource
                     ->label('Customer Phone')
                     ->placeholder('Enter customer phone'),
 
+                Forms\Components\TextInput::make('address')
+                    ->label('Address')
+                    ->placeholder('Enter address'),
+
+                Forms\Components\TextInput::make('city')
+                    ->label('City')
+                    ->placeholder('Enter city'),
+
+                Forms\Components\TextInput::make('postcode')
+                    ->label('Postcode')
+                    ->placeholder('Enter postcode'),
+
                 Forms\Components\DatePicker::make('selected_date')
                     ->required()
                     ->label('Selected Date')
@@ -143,7 +162,10 @@ class RepairBookingResource extends Resource
                     ->label('Total Amount')
                     ->placeholder('Enter total amount')
                     ->numeric()
-                    ->disabled(),
+                    ->afterStateUpdated(function ($state, Forms\Set $set, Forms\Get $get) {
+                        $totalDiscount = $get('total_discount');
+                        $set('final_amount', $state - $totalDiscount);
+                    }),
 
                 Forms\Components\TextInput::make('total_discount')
                     ->label('Total Discount')
@@ -162,7 +184,11 @@ class RepairBookingResource extends Resource
                     ->label('Final Amount')
                     ->placeholder('Enter final amount')
                     ->numeric()
-                    ->disabled(),
+                    ->afterStateUpdated(function ($state, Forms\Set $set, Forms\Get $get) {
+                        $totalAmount = $get('total_amount');
+                        $totalDiscount = $totalAmount - $state;
+                        $set('total_discount', max(0, $totalDiscount));
+                    }),
 
                 Forms\Components\Select::make('store_id')
                     ->relationship('store', 'name')
@@ -198,6 +224,18 @@ class RepairBookingResource extends Resource
                     ->label('Phone')
                     ->sortable()
                     ->searchable()
+                    ->toggleable(),
+
+                TextColumn::make('address')
+                    ->label('Address')
+                    ->toggleable(),
+
+                TextColumn::make('city')
+                    ->label('City')
+                    ->toggleable(),
+
+                TextColumn::make('postcode')
+                    ->label('Postcode')
                     ->toggleable(),
 
                 TextColumn::make('repairServices.name')

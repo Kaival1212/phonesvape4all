@@ -292,6 +292,6 @@ class TwickenhamPosResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()
-            ->where('store_id', 1); // Twickenham store ID
+            ->where('store_id', 2); // Twickenham store ID
     }
 }
