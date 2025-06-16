@@ -27,6 +27,13 @@ class RepairServiceResource extends Resource
     {
         return $form
             ->schema([
+                Forms\Components\Select::make('product_id')
+                    ->relationship('product', 'name')
+                    ->required()
+                    ->label('Primary Product')
+                    ->searchable()
+                    ->preload(),
+
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255),
@@ -45,37 +52,7 @@ class RepairServiceResource extends Resource
                     ->image()
                     ->directory('repair-services')
                     ->nullable(),
-                Forms\Components\Select::make('products')
-                    ->relationship('products', 'name')
-                    ->multiple()
-                    ->preload()
-                    ->searchable()
-                    ->createOptionForm([
-                        Forms\Components\TextInput::make('name')
-                            ->required()
-                            ->live(onBlur: true)
-                            ->afterStateUpdated(fn (string $operation, $state, Forms\Set $set) =>
-                                $operation === 'create' ? $set('slug', Str::slug($state)) : null),
-                        Forms\Components\TextInput::make('slug')
-                            ->required()
-                            ->unique(ignoreRecord: true),
-                        Forms\Components\Select::make('category_id')
-                            ->relationship('category', 'name')
-                            ->required(),
-                        Forms\Components\Select::make('brand_id')
-                            ->relationship('brand', 'name')
-                            ->nullable(),
-                        Forms\Components\FileUpload::make('image')
-                            ->image()
-                            ->directory('products')
-                            ->nullable(),
-                        Forms\Components\Textarea::make('description')
-                            ->nullable(),
-                        Forms\Components\Toggle::make('is_selling')
-                            ->default(true),
-                        Forms\Components\Toggle::make('is_repairable')
-                            ->default(false),
-                    ]),
+
             ]);
     }
 

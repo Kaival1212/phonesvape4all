@@ -31,7 +31,15 @@ class TwickenhamPosResource extends Resource
                     ->label('Product')
                     ->required()
                     ->searchable()
-                    ->preload(),
+                    ->preload()
+                    ->live()
+                    ->afterStateUpdated(function ($state, Forms\Set $set) {
+                        // Reset services when product changes
+                        $set('repair_services', []);
+                        $set('total_amount', 0);
+                        $set('total_discount', 0);
+                        $set('final_amount', 0);
+                    }),
 
                 Forms\Components\Select::make('repair_services')
                     ->multiple()
@@ -40,16 +48,19 @@ class TwickenhamPosResource extends Resource
                     ->searchable()
                     ->required()
                     ->label('Repair Services')
+                    ->live()
                     ->afterStateUpdated(function ($state, Forms\Set $set, Forms\Get $get) {
                         $totalAmount = 0;
                         $totalDiscount = 0;
+
                         if ($state) {
-                            $services = \App\Models\RepairService::whereIn('id', $state)->get();
+                            $services = RepairService::whereIn('id', $state)->get();
                             foreach ($services as $service) {
-                                $totalAmount += $service->price;
+                                $totalAmount += $service->price ?? 0;
                                 $totalDiscount += $service->discount ?? 0;
                             }
                         }
+
                         $set('total_amount', $totalAmount);
                         $set('total_discount', $totalDiscount);
                         $set('final_amount', $totalAmount - $totalDiscount);
@@ -62,7 +73,7 @@ class TwickenhamPosResource extends Resource
                     ->saveRelationshipsUsing(function (\App\Models\RepairBooking $record, $state) {
                         $record->repairServices()->detach();
                         if ($state) {
-                            $services = \App\Models\RepairService::whereIn('id', $state)->get();
+                            $services = RepairService::whereIn('id', $state)->get();
                             foreach ($services as $service) {
                                 $record->repairServices()->attach($service->id, [
                                     'price' => $service->price,
@@ -141,9 +152,11 @@ class TwickenhamPosResource extends Resource
                     ->label('Total Amount')
                     ->placeholder('Enter total amount')
                     ->numeric()
+                    ->live(onBlur: true)
                     ->afterStateUpdated(function ($state, Forms\Set $set, Forms\Get $get) {
-                        $totalDiscount = $get('total_discount');
-                        $set('final_amount', $state - $totalDiscount);
+                        $totalDiscount = $get('total_discount') ?? 0;
+                        $finalAmount = ($state ?? 0) - $totalDiscount;
+                        $set('final_amount', max(0, $finalAmount));
                     }),
 
                 Forms\Components\TextInput::make('total_discount')
@@ -152,10 +165,13 @@ class TwickenhamPosResource extends Resource
                     ->numeric()
                     ->default(0)
                     ->minValue(0)
-                    ->maxValue(fn (Forms\Get $get) => $get('total_amount'))
+                    ->live(onBlur: true)
+                    ->maxValue(fn (Forms\Get $get) => $get('total_amount') ?? 0)
                     ->afterStateUpdated(function ($state, Forms\Set $set, Forms\Get $get) {
-                        $totalAmount = $get('total_amount');
-                        $set('final_amount', $totalAmount - $state);
+                        $totalAmount = $get('total_amount') ?? 0;
+                        $discount = $state ?? 0;
+                        $finalAmount = $totalAmount - $discount;
+                        $set('final_amount', max(0, $finalAmount));
                     }),
 
                 Forms\Components\TextInput::make('final_amount')
@@ -163,10 +179,15 @@ class TwickenhamPosResource extends Resource
                     ->label('Final Amount')
                     ->placeholder('Enter final amount')
                     ->numeric()
+                    ->live(onBlur: true)
                     ->afterStateUpdated(function ($state, Forms\Set $set, Forms\Get $get) {
-                        $totalAmount = $get('total_amount');
-                        $totalDiscount = $totalAmount - $state;
-                        $set('total_discount', max(0, $totalDiscount));
+                        $totalAmount = $get('total_amount') ?? 0;
+                        $finalAmount = $state ?? 0;
+
+                        if ($totalAmount > 0 && $finalAmount <= $totalAmount) {
+                            $totalDiscount = $totalAmount - $finalAmount;
+                            $set('total_discount', max(0, $totalDiscount));
+                        }
                     }),
             ]);
     }

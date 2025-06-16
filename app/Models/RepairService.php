@@ -17,7 +17,8 @@ class RepairService extends Model
         'price',
         'discount',
         'estimated_duration_minutes',
-        'image'
+        'image',
+        'product_id',
     ];
 
     public function products(): BelongsToMany

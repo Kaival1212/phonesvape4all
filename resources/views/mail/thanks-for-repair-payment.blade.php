@@ -123,8 +123,7 @@
                                         margin: 0;
                                     "
                                 >
-                                    @foreach($repairBooking->repairServices as
-                                    $service)
+                                    @foreach($repairBooking->repairServices as $service)
                                     <li style="margin-bottom: 8px">
                                         <strong>{{ $service->name }}</strong>
                                         <br />
