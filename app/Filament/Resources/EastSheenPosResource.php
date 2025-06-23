@@ -20,7 +20,7 @@ class EastSheenPosResource extends Resource
     protected static ?string $navigationGroup = 'Store POS';
     protected static ?string $navigationIcon = 'heroicon-o-computer-desktop';
     protected static ?string $navigationLabel = 'East Sheen POS';
-    protected static ?int $navigationSort = 3;
+    protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
     {

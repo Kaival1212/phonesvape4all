@@ -20,7 +20,7 @@ class TwickenhamPosResource extends Resource
     protected static ?string $navigationGroup = 'Store POS';
     protected static ?string $navigationIcon = 'heroicon-o-computer-desktop';
     protected static ?string $navigationLabel = 'Twickenham POS';
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
     {

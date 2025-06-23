@@ -11,7 +11,7 @@ class CreateCaterhamPos extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        $data['store_id'] = 2; // Caterham store ID
+        $data['store_id'] = 3; // Caterham store ID
         $data['currency'] = 'GBP';
         return $data;
     }

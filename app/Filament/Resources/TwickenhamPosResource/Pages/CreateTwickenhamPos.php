@@ -11,7 +11,7 @@ class CreateTwickenhamPos extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        $data['store_id'] = 1; // Twickenham store ID
+        $data['store_id'] = 2; // Twickenham store ID
         $data['currency'] = 'GBP';
         return $data;
     }

@@ -11,7 +11,7 @@ class CreateEastSheenPos extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        $data['store_id'] = 3; // East Sheen store ID
+        $data['store_id'] = 1; // East Sheen store ID
         $data['currency'] = 'GBP';
         return $data;
     }
