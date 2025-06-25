@@ -27,7 +27,8 @@ class RepairProduct extends Component
         $products = Product::where('is_repairable', true)
             ->where('brand_id', $this->brand->id)
             ->where('name', 'like', '%' . $this->search . '%')
-            ->get();
+            ->get()
+            ->sortBy('name', SORT_REGULAR, true);
 
         // Check if any product has repair services
         $hasRepairServices = false;
