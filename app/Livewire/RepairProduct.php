@@ -28,7 +28,7 @@ class RepairProduct extends Component
             ->where('brand_id', $this->brand->id)
             ->where('name', 'like', '%' . $this->search . '%')
             ->get()
-            ->sortBy('name', SORT_REGULAR, true);
+            ->sortBy('created_at');
 
         // Check if any product has repair services
         $hasRepairServices = false;

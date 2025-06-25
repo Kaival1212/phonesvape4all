@@ -22,49 +22,45 @@
         </div>
 
         <!-- Products Grid -->
-        <div
-            class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6"
-        >
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
             @foreach($products as $product)
-            <div
-                class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow hover:shadow-xl transition duration-300"
-            >
-                <div class="flex relative justify-center items-center">
-                    <img
-                        src="{{ Storage::disk('r2')->url($product->image) }}"
-                        alt="{{ $product->name }}"
-                        class="w-1/2 h-1/2 md:w-full md:h-full object-cover"
-                    />
-                    @if($product->is_repairable)
-                    <span
-                        class="absolute top-2 left-2 bg-black text-white text-xs px-2 py-1 rounded-full shadow"
-                    >
+                <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow hover:shadow-xl transition duration-300 flex flex-col" style="height: 480px;">
+                    <div class="relative bg-gray-50 flex items-center justify-center p-4" style="height: 280px;">
+                        <img
+                            src="{{ Storage::disk('r2')->url($product->image) }}"
+                            alt="{{ $product->name }}"
+                            class="max-w-full max-h-full object-contain rounded-lg"
+                        />
+                        @if($product->is_repairable)
+                            <span class="absolute top-2 left-2 bg-black text-white text-xs px-2 py-1 rounded-full shadow">
                         Repairable
                     </span>
-                    @endif
-                </div>
-                <div class="p-4">
-                    <div class="flex items-center justify-between mb-2">
-                        <h3 class="text-lg font-semibold text-black">
-                            {{ $product->name }}
-                        </h3>
-                        <span class="text-sm text-gray-600">
-                            {{ $product->brand->name }}
-                        </span>
+                        @endif
                     </div>
-                    <p class="text-sm text-gray-600 mb-4 line-clamp-2">
-                        {{ $product->description }}
-                    </p>
-                    <div class="text-center">
-                        <a
-                            href="{{ route('buy.phones.variants', [$categoriesSlug, $brandSlug, $product->id]) }}"
-                            class="inline-block bg-black hover:bg-gray-800 text-white text-sm py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-black transition"
-                        >
-                            View Product
-                        </a>
+                    <div class="p-4 flex flex-col justify-between" style="height: 200px;">
+                        <div>
+                            <div class="flex items-start justify-between mb-2">
+                                <h3 class="text-xl font-bold text-black leading-tight flex-grow pr-2">
+                                    {{ $product->name }}
+                                </h3>
+                                <span class="text-sm text-gray-600 font-medium whitespace-nowrap">
+                                {{ $product->brand->name }}
+                            </span>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-4 line-clamp-2">
+                                {{ $product->description }}
+                            </p>
+                        </div>
+                        <div class="text-center">
+                            <a
+                                href="{{ route('buy.phones.variants', [$categoriesSlug, $brandSlug, $product->id]) }}"
+                                class="inline-block bg-black hover:bg-gray-800 text-white text-sm font-semibold py-3 px-6 rounded-lg focus:outline-none focus:ring-2 focus:ring-black transition-all duration-200 w-full"
+                            >
+                                View Product
+                            </a>
+                        </div>
                     </div>
                 </div>
-            </div>
             @endforeach
         </div>
     </div>

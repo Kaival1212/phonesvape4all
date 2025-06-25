@@ -4,11 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ProductResource\Pages;
 use App\Filament\Resources\ProductResource\RelationManagers;
-use App\Filament\Resources\ProductResource\RelationManagers\RepairsRelationManagerRelationManager;
-use App\Filament\Resources\ProductResource\RelationManagers\VariantsRelationManagerRelationManager;
-use App\Livewire\Repair;
 use App\Models\Product;
-use Dom\Text;
 use Filament\Forms;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
@@ -20,14 +16,14 @@ use Filament\Tables;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Str;
+use App\Filament\Resources\ProductResource\RelationManagers\VariantsRelationManagerRelationManager;
+use App\Filament\Resources\ProductResource\RelationManagers\RepairsRelationManagerRelationManager;
 
 class ProductResource extends Resource
 {
     protected static ?string $model = Product::class;
     protected static ?string $navigationGroup = 'Catalog';
-
     protected static ?string $navigationIcon = 'heroicon-o-device-phone-mobile';
 
     public static function form(Form $form): Form
@@ -35,12 +31,12 @@ class ProductResource extends Resource
         return $form
             ->schema([
                 Select::make('category_id')
-                    ->relationship('category' , 'name')
+                    ->relationship('category', 'name')
                     ->required()
                     ->label('Category'),
 
                 Select::make('brand_id')
-                    ->relationship('brand' , 'name')
+                    ->relationship('brand', 'name')
                     ->nullable()
                     ->label('Brand'),
 
@@ -50,7 +46,7 @@ class ProductResource extends Resource
                     ->maxLength(255)
                     ->live(onBlur: true)
                     ->afterStateUpdated(fn (string $operation, $state, Forms\Set $set) =>
-                        $operation === 'create' ? $set('slug', Str::slug($state)) : null),
+                    $operation === 'create' ? $set('slug', Str::slug($state)) : null),
 
                 TextInput::make('slug')
                     ->required()
@@ -62,10 +58,10 @@ class ProductResource extends Resource
                     }),
 
                 FileUpload::make('image')
-                ->disk('r2')
-                ->visibility('public')
-                ->imageEditor()
-                ->label('Image'),
+                    ->disk('r2')
+                    ->visibility('public')
+                    ->imageEditor()
+                    ->label('Image'),
 
                 TextInput::make('description')
                     ->label('Description')
@@ -110,6 +106,8 @@ class ProductResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->reorderable('created_at')
+            ->defaultSort('created_at', 'asc') // Sort by creation order
             ->columns([
                 Tables\Columns\TextColumn::make('id')
                     ->label('ID')
