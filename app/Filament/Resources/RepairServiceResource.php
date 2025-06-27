@@ -49,9 +49,10 @@ class RepairServiceResource extends Resource
                     ->numeric()
                     ->nullable(),
                 Forms\Components\FileUpload::make('image')
-                    ->image()
-                    ->directory('repair-services')
-                    ->nullable(),
+                    ->disk('r2')
+                    ->visibility('public')
+                    ->imageEditor()
+                    ->label('Image'),
 
             ]);
     }
