@@ -14,11 +14,17 @@
         <!-- Product Image -->
         <div class="flex justify-center mb-16">
             <div class="relative">
-                <img
-                    src="{{ Storage::disk('r2')->url($product->image) }}"
-                    alt="{{ $product->name }}"
-                    class="w-64 sm:w-80 rounded-2xl shadow-2xl transform hover:scale-105 transition-transform duration-300"
-                />
+                @if($product->image)
+                    <img
+                        src="{{ Storage::disk('r2')->url($product->image) }}"
+                        alt="{{ $product->name }}"
+                        class="w-64 sm:w-80 rounded-2xl shadow-2xl transform hover:scale-105 transition-transform duration-300"
+                    />
+                @else
+                    <div class="w-64 sm:w-80 h-64 sm:h-80 bg-gray-200 rounded-2xl flex items-center justify-center shadow-2xl">
+                        <span class="text-gray-400">No Image</span>
+                    </div>
+                @endif
                 <div class="absolute -top-4 -right-4 bg-black text-white px-4 py-2 rounded-full text-sm font-semibold shadow-lg">
                     Expert Repair
                 </div>
@@ -29,9 +35,9 @@
             <!-- Repair Services Grid -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
                 @foreach ($services as $service)
-                    <div class="group bg-white border border-gray-100 rounded-2xl overflow-hidden hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2">
+                    <div class="group bg-white border border-gray-100 rounded-2xl overflow-hidden hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 flex flex-col h-[420px]">
                         @if ($service->image)
-                            <div class="relative w-full h-48 overflow-hidden">
+                            <div class=" w-full h-full overflow-hidden">
                                 <img
                                     src="{{ Storage::disk('r2')->url($service->image) }}"
                                     alt="{{ $service->name }}"
@@ -47,36 +53,38 @@
                             </div>
                         @endif
 
-                        <div class="p-6">
-                            <h3 class="text-xl font-bold text-black mb-3 group-hover:text-gray-800 transition-colors">
-                                {{ $service->name }}
-                            </h3>
+                        <div class="p-6 flex flex-col justify-between flex-1">
+                            <div>
+                                <h3 class="text-xl font-bold text-black mb-3 group-hover:text-gray-800 transition-colors">
+                                    {{ $service->name }}
+                                </h3>
 
-                            @if ($service->description)
-                                <p class="text-gray-600 mb-4 text-sm leading-relaxed line-clamp-2">
-                                    {{ $service->description }}
-                                </p>
-                            @endif
-
-                            <div class="flex items-center justify-between mb-4">
-                                <div class="text-black font-bold text-2xl">
-                                    £{{ number_format($service->price, 2) }}
-                                </div>
-                                @if ($service->estimated_duration_minutes)
-                                    <div class="flex items-center text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
-                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                        </svg>
-                                        {{ $service->estimated_duration_minutes }} mins
-                                    </div>
+                                @if ($service->description)
+                                    <p class="text-gray-600 mb-4 text-sm leading-relaxed line-clamp-2">
+                                        {{ $service->description }}
+                                    </p>
                                 @endif
+
+                                <div class="flex items-center justify-between mb-4">
+                                    <div class="text-black font-bold text-2xl">
+                                        £{{ number_format($service->price, 2) }}
+                                    </div>
+                                    @if ($service->estimated_duration_minutes)
+                                        <div class="flex items-center text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
+                                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                            </svg>
+                                            {{ $service->estimated_duration_minutes }} mins
+                                        </div>
+                                    @endif
+                                </div>
                             </div>
 
-                            <a
-                                href="{{ route('repair.product.form.service', [$categoriesSlug, $brandSlug, $productID, $service->id]) }}"
-                                class="block w-full bg-black hover:bg-gray-800 text-white text-center font-semibold py-3 px-6 rounded-xl focus:outline-none focus:ring-4 focus:ring-black/20 transition-all duration-200 transform hover:scale-105 active:scale-95"
+
+                            <a href="{{ route('repair.product.form.service', [$categoriesSlug, $brandSlug, $productID, $service->id]) }}"
+                            class="block w-full bg-black hover:bg-gray-800 text-white text-center font-semibold py-3 px-6 rounded-xl focus:outline-none focus:ring-4 focus:ring-black/20 transition-all duration-200 transform hover:scale-105 active:scale-95"
                             >
-                                Book Now
+                            Book Now
                             </a>
                         </div>
                     </div>
