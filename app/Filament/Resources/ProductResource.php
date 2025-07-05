@@ -76,30 +76,6 @@ class ProductResource extends Resource
                     ->label('Is Repairable')
                     ->default(false),
 
-                Select::make('repairServices')
-                    ->relationship('repairServices', 'name')
-                    ->multiple()
-                    ->preload()
-                    ->searchable()
-                    ->createOptionForm([
-                        TextInput::make('name')
-                            ->required(),
-                        TextInput::make('description')
-                            ->nullable(),
-                        TextInput::make('price')
-                            ->numeric()
-                            ->required(),
-                        TextInput::make('discount')
-                            ->numeric()
-                            ->nullable(),
-                        TextInput::make('estimated_duration_minutes')
-                            ->numeric()
-                            ->nullable(),
-                        FileUpload::make('image')
-                            ->image()
-                            ->directory('repair-services')
-                            ->nullable(),
-                    ]),
             ]);
     }
 

@@ -61,8 +61,16 @@ class RepairServiceResource extends Resource
     {
         return $table
             ->columns([
+
+                Tables\Columns\TextColumn::make('id')
+                    ->label('ID')
+                    ->sortable()
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
+                Tables\Columns\TextColumn::make('product.name'),
                 Tables\Columns\TextColumn::make('price')
                     ->money('GBP')
                     ->sortable(),
@@ -83,7 +91,7 @@ class RepairServiceResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                Tables\Filters\SelectFilter::make('products')
+                Tables\Filters\SelectFilter::make('product')
                     ->relationship('products', 'name')
                     ->multiple(),
             ])

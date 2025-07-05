@@ -62,10 +62,7 @@ class RepairsRelationManagerRelationManager extends RelationManager
                     ->label('ID')
                     ->sortable()
                     ->searchable(),
-                TextColumn::make('product.name')
-                    ->label('Product Name')
-                    ->sortable()
-                    ->searchable(),
+
                 TextColumn::make('name')
                     ->label('Service Name')
                     ->sortable()

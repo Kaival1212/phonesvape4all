@@ -23,7 +23,7 @@ class RepairService extends Model
 
     public function products(): BelongsToMany
     {
-        return $this->belongsToMany(Product::class, 'product_repair_service');
+        return $this->belongsToMany(Product::class);
     }
 
     public function product()
