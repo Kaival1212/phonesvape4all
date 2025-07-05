@@ -80,7 +80,10 @@ class RepairServiceResource extends Resource
                 Tables\Columns\TextColumn::make('estimated_duration_minutes')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\ImageColumn::make('image'),
+                Tables\Columns\ImageColumn::make('image')
+                    ->disk('r2')
+                    ->visibility('public')
+                    ->label('Image'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
