@@ -92,7 +92,7 @@ class RepairServiceResource extends Resource
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('product')
-                    ->relationship('products', 'name')
+                    ->relationship('product', 'name')
                     ->multiple(),
             ])
             ->actions([
